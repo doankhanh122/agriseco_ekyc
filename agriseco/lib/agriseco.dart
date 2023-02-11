@@ -12,24 +12,25 @@ import 'package:agriseco/src/pages/page_3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class EkycFirstPage extends StatefulWidget {
+class Agriseco extends StatefulWidget {
   @override
-  State<EkycFirstPage> createState() => _EkycFirstPageState();
+  State<Agriseco> createState() => _AgrisecoState();
 }
 
-class _EkycFirstPageState extends State<EkycFirstPage> {
-  final totalIndex = 6;
-  int currentIndex = 0;
-  void nextPage() {}
+class _AgrisecoState extends State<Agriseco> {
+  bool disableBottomBtn = false;
+  void callBack(bool value) {
+    setState(() {
+      disableBottomBtn = value;
+    });
+  }
 
-  List<EkycStep> steps = [
-    EkycStep(content: FirstPage(), state: EkycStepState.complete),
-    EkycStep(content: SecondPage(), state: EkycStepState.indexed),
-    EkycStep(content: ThirdPage(), state: EkycStepState.indexed),
-    EkycStep(content: FourthPage(), state: EkycStepState.indexed),
-    EkycStep(content: FifthPage(), state: EkycStepState.indexed),
-    EkycStep(content: SixthPage(), state: EkycStepState.indexed),
-  ];
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   disableBottomBtn = false;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,22 +45,110 @@ class _EkycFirstPageState extends State<EkycFirstPage> {
         ),
         elevation: 0,
       ),
-      body: EkycStepper(
-        currentStep: currentIndex,
-        ekycSteps: steps,
-        onStepContinue: () {
-          setState(() {
-            currentIndex = currentIndex + 1 >= steps.length
-                ? currentIndex
-                : currentIndex + 1;
-          });
-        },
-        onStepTapped: (int index) {
-          setState(() {
-            currentIndex = index;
-          });
+      body: EkycFirstPage(
+        disableBottomBtn: disableBottomBtn,
+        isDisableBottomBtnCallBack: (bool value) {
+          callBack(value);
         },
       ),
+    );
+  }
+}
+
+class EkycFirstPage extends StatefulWidget {
+  const EkycFirstPage(
+      {Key key, this.disableBottomBtn, this.isDisableBottomBtnCallBack})
+      : super(key: key);
+
+  final bool disableBottomBtn;
+  final ValueChanged<bool> isDisableBottomBtnCallBack;
+
+  @override
+  State<EkycFirstPage> createState() => _EkycFirstPageState();
+}
+
+class _EkycFirstPageState extends State<EkycFirstPage> {
+  final totalIndex = 6;
+  int currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<EkycStep> steps = [
+      EkycStep(
+        content: FirstPage(isDisableBottomBtn: (bool value) {
+          // print(value);
+          // isDisableBottomBtnCallBack(value);
+          widget.isDisableBottomBtnCallBack.call(value);
+        }),
+        state: EkycStepState.complete,
+        isDisableBottomBtn: widget.disableBottomBtn,
+      ),
+      EkycStep(
+        content: SecondPage(isDisableBottomBtn: (bool value) {
+          // print(value);
+          // isDisableBottomBtnCallBack(value);
+          widget.isDisableBottomBtnCallBack.call(value);
+        }),
+        state: EkycStepState.indexed,
+        isDisableBottomBtn: widget.disableBottomBtn,
+      ),
+      EkycStep(
+        content: ThirdPage(isDisableBottomBtn: (bool value) {
+          // print(value);
+          // isDisableBottomBtnCallBack(value);
+          widget.isDisableBottomBtnCallBack.call(value);
+        }),
+        state: EkycStepState.indexed,
+        isDisableBottomBtn: widget.disableBottomBtn,
+      ),
+      EkycStep(
+        content: FourthPage(isDisableBottomBtn: (bool value) {
+          // print(value);
+          // isDisableBottomBtnCallBack(value);
+          widget.isDisableBottomBtnCallBack.call(value);
+        }),
+        state: EkycStepState.indexed,
+        isDisableBottomBtn: widget.disableBottomBtn,
+      ),
+      EkycStep(
+        content: FifthPage(isDisableBottomBtn: (bool value) {
+          // print(value);
+          // isDisableBottomBtnCallBack(value);
+          widget.isDisableBottomBtnCallBack.call(value);
+        }),
+        state: EkycStepState.indexed,
+        isDisableBottomBtn: widget.disableBottomBtn,
+      ),
+      EkycStep(
+        content: SixthPage(isDisableBottomBtn: (bool value) {
+          // print(value);
+          // isDisableBottomBtnCallBack(value);
+          widget.isDisableBottomBtnCallBack.call(value);
+        }),
+        state: EkycStepState.indexed,
+        isDisableBottomBtn: widget.disableBottomBtn,
+      ),
+    ];
+    return EkycStepper(
+      currentStep: currentIndex,
+      ekycSteps: steps,
+      onStepContinue: () {
+        setState(() {
+          currentIndex = currentIndex + 1 >= steps.length
+              ? currentIndex
+              : currentIndex + 1;
+        });
+      },
+      onStepTapped: (int index) {
+        setState(() {
+          currentIndex = index;
+        });
+      },
     );
   }
 }

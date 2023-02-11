@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import '../../agriseco.dart';
 
 class ThirdPage extends StatelessWidget {
-  const ThirdPage({Key key, this.nextStep}) : super(key: key);
+  const ThirdPage({Key key, this.isDisableBottomBtn}) : super(key: key);
+  final ValueChanged<bool> isDisableBottomBtn;
 
-  final Function nextStep;
   @override
   Widget build(BuildContext context) {
     return PageLayout(

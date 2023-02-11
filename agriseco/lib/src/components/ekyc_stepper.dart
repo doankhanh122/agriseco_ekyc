@@ -12,16 +12,16 @@ enum EkycStepState {
   complete,
 }
 
-class EkycStep extends StatelessWidget {
-  const EkycStep({this.content, this.state});
+class EkycStep {
+  const EkycStep({
+    @required this.content,
+    @required this.state,
+    @required this.isDisableBottomBtn,
+  });
 
   final Widget content;
   final EkycStepState state;
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
+  final bool isDisableBottomBtn;
 }
 
 class EkycStepper extends StatefulWidget {
@@ -66,6 +66,12 @@ class _EkycStepperState extends State<EkycStepper> {
     }
   }
 
+  Widget renderBottomBtn() {
+    return !widget.ekycSteps[widget.currentStep].isDisableBottomBtn
+        ? _BottomButton(nextPage: widget.onStepContinue)
+        : Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -86,7 +92,7 @@ class _EkycStepperState extends State<EkycStepper> {
             ],
           ),
         ),
-        _BottomButton(nextPage: widget.onStepContinue),
+        renderBottomBtn(),
       ],
     );
   }
@@ -220,10 +226,10 @@ class _HeaderProcessState extends State<_HeaderProcess> {
 class _BottomButton extends StatelessWidget {
   _BottomButton({
     @required this.nextPage,
-    this.buttonLabel = 'Tiếp tục',
+    this.buttonLabel,
   });
 
-  String buttonLabel;
+  final String buttonLabel;
   final Function nextPage;
 
   @override
@@ -234,9 +240,27 @@ class _BottomButton extends StatelessWidget {
       },
       child: Container(
         padding: EdgeInsets.all(10),
-        color: kBackgroundColor,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Color(0xFFC5535D),
+                Color(0xFFA71F2B),
+              ]),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(1, 0), // changes position of shadow
+            ),
+          ],
+        ),
         child: SafeArea(
-            child: Center(child: Text(buttonLabel, style: kLabelButtonStyle))),
+            child: Center(
+                child:
+                    Text(buttonLabel ?? 'Tiếp tục', style: kLabelButtonStyle))),
       ),
     );
   }

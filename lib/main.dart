@@ -25,8 +25,8 @@ class MyHomePage extends StatelessWidget {
     return Center(
       child: TextButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => EkycFirstPage()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Agriseco()));
         },
         child: Text('Open account using EKYC'),
       ),
