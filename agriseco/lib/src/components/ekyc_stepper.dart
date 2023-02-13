@@ -68,7 +68,9 @@ class _EkycStepperState extends State<EkycStepper> {
 
   Widget renderBottomBtn() {
     return !widget.ekycSteps[widget.currentStep].isDisableBottomBtn
-        ? _BottomButton(nextPage: widget.onStepContinue)
+        ? _BottomButton(
+            nextPage: widget.onStepContinue,
+          )
         : Container();
   }
 

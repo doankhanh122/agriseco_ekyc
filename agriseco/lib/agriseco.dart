@@ -2,6 +2,7 @@ library agriseco;
 
 import 'package:agriseco/src/components/ekyc_stepper.dart';
 import 'package:agriseco/src/components/page_layout.dart';
+import 'package:agriseco/src/components/shared/camera_app.dart';
 import 'package:agriseco/src/constants.dart';
 import 'package:agriseco/src/pages/page_5.dart';
 import 'package:agriseco/src/pages/page_1.dart';
@@ -11,6 +12,13 @@ import 'package:agriseco/src/pages/page_6.dart';
 import 'package:agriseco/src/pages/page_3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+// class Agriseco extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return CameraApp();
+//   }
+// }
 
 class Agriseco extends StatefulWidget {
   @override
