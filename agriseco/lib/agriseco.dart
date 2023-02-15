@@ -1,8 +1,6 @@
 library agriseco;
 
 import 'package:agriseco/src/components/ekyc_stepper.dart';
-import 'package:agriseco/src/components/page_layout.dart';
-import 'package:agriseco/src/components/shared/camera_app.dart';
 import 'package:agriseco/src/constants.dart';
 import 'package:agriseco/src/pages/page_5.dart';
 import 'package:agriseco/src/pages/page_1.dart';
@@ -46,11 +44,17 @@ class _AgrisecoState extends State<Agriseco> {
       appBar: AppBar(
         // toolbarHeight: 100,
         backgroundColor: kBackgroundColor,
-        title: SvgPicture.asset(
-          'assets/images/agr_panel.svg',
+        centerTitle: true,
+        title: SvgPicture.network(
+          'https://agriseco.com.vn/download/ekyc/agr_panel.svg',
           semanticsLabel: 'AGR LOGO',
           height: 50,
         ),
+        // title: SvgPicture.asset(
+        //   'assets/images/agr_panel.svg',
+        //   semanticsLabel: 'AGR LOGO',
+        //   height: 50,
+        // ),
         elevation: 0,
       ),
       body: EkycFirstPage(
