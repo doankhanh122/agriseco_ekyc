@@ -24,19 +24,82 @@ class Agriseco extends StatefulWidget {
 }
 
 class _AgrisecoState extends State<Agriseco> {
-  bool disableBottomBtn = false;
-  void callBack(bool value) {
-    setState(() {
-      disableBottomBtn = value;
-    });
+  Map<int, bool> isShowBottomButtonStates = {};
+  List<EkycStep> steps = [];
+
+  void updateBottomButtonStates({int index, bool newValue}) {
+    for (int i = 0; i < isShowBottomButtonStates.length; i++) {
+      isShowBottomButtonStates[i] =
+          i == index ? newValue : (i == 0 ? true : false);
+    }
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //
-  //   disableBottomBtn = false;
-  // }
+  @override
+  void initState() {
+    super.initState();
+
+    // isShowBottomButton = true;
+    for (int i = 0; i < 7; i++) {
+      isShowBottomButtonStates[i] = i == 0 ? true : false;
+    }
+
+    steps = [
+      EkycStep(
+        content: FirstPage(isShowBottomButtonCallback: (bool value) {
+          setState(() {
+            updateBottomButtonStates(index: 0, newValue: value);
+          });
+        }),
+        state: EkycStepState.complete,
+      ),
+      EkycStep(
+        content: SecondPage(isShowBottomButtonCallback: (bool value) {
+          setState(() {
+            updateBottomButtonStates(index: 1, newValue: value);
+          });
+        }),
+        state: EkycStepState.indexed,
+      ),
+      EkycStep(
+        content: ThirdPage(isShowBottomButtonCallback: (bool value) {
+          setState(() {
+            updateBottomButtonStates(index: 2, newValue: value);
+          });
+        }),
+        state: EkycStepState.indexed,
+      ),
+      EkycStep(
+        content: FourthPage(isShowBottomButtonCallback: (bool value) {
+          setState(() {
+            updateBottomButtonStates(index: 3, newValue: value);
+          });
+        }),
+        state: EkycStepState.indexed,
+      ),
+      EkycStep(
+        content: FifthPage(isDisableBottomBtn: (bool value) {
+          setState(() {
+            updateBottomButtonStates(index: 4, newValue: value);
+          });
+        }),
+        state: EkycStepState.indexed,
+      ),
+      EkycStep(
+        content: SixthPage(isDisableBottomBtn: (bool value) {
+          setState(() {
+            updateBottomButtonStates(index: 5, newValue: value);
+          });
+        }),
+        state: EkycStepState.indexed,
+      ),
+    ];
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,31 +120,88 @@ class _AgrisecoState extends State<Agriseco> {
         // ),
         elevation: 0,
       ),
-      body: EkycFirstPage(
-        disableBottomBtn: disableBottomBtn,
-        isDisableBottomBtnCallBack: (bool value) {
-          callBack(value);
-        },
+      body: EkycStart(
+        steps: steps,
+        isShowBottomButtonStates: isShowBottomButtonStates,
       ),
     );
   }
 }
 
-class EkycFirstPage extends StatefulWidget {
-  const EkycFirstPage(
-      {Key key, this.disableBottomBtn, this.isDisableBottomBtnCallBack})
-      : super(key: key);
+// List<EkycStep> steps = [
+//   EkycStep(
+//     content: FirstPage(isDisableBottomBtn: (bool value) {
+//       // print(value);
+//       // isDisableBottomBtnCallBack(value);
+//       widget.isDisableBottomBtnCallBack.call(value);
+//     }),
+//     state: EkycStepState.complete,
+//     bottomButtonState: widget.disableBottomBtn,
+//   ),
+//   EkycStep(
+//     content: SecondPage(isDisableBottomBtn: (bool value) {
+//       // print(value);
+//       // isDisableBottomBtnCallBack(value);
+//       widget.isDisableBottomBtnCallBack.call(value);
+//     }),
+//     state: EkycStepState.indexed,
+//     bottomButtonState: widget.disableBottomBtn,
+//   ),
+//   EkycStep(
+//     content: ThirdPage(isDisableBottomBtn: (bool value) {
+//       // print(value);
+//       // isDisableBottomBtnCallBack(value);
+//       widget.isDisableBottomBtnCallBack.call(value);
+//     }),
+//     state: EkycStepState.indexed,
+//     bottomButtonState: widget.disableBottomBtn,
+//   ),
+//   EkycStep(
+//     content: FourthPage(isDisableBottomBtn: (bool value) {
+//       // print(value);
+//       // isDisableBottomBtnCallBack(value);
+//       widget.isDisableBottomBtnCallBack.call(value);
+//     }),
+//     state: EkycStepState.indexed,
+//     bottomButtonState: widget.disableBottomBtn,
+//   ),
+//   EkycStep(
+//     content: FifthPage(isDisableBottomBtn: (bool value) {
+//       // print(value);
+//       // isDisableBottomBtnCallBack(value);
+//       widget.isDisableBottomBtnCallBack.call(value);
+//     }),
+//     state: EkycStepState.indexed,
+//     bottomButtonState: widget.disableBottomBtn,
+//   ),
+//   EkycStep(
+//     content: SixthPage(isDisableBottomBtn: (bool value) {
+//       // print(value);
+//       // isDisableBottomBtnCallBack(value);
+//       widget.isDisableBottomBtnCallBack.call(value);
+//     }),
+//     state: EkycStepState.indexed,
+//     bottomButtonState: widget.disableBottomBtn,
+//   ),
+// ];
 
-  final bool disableBottomBtn;
-  final ValueChanged<bool> isDisableBottomBtnCallBack;
+class EkycStart extends StatefulWidget {
+  const EkycStart({this.isShowBottomButtonStates, this.steps});
+
+  final Map<int, bool> isShowBottomButtonStates;
+  final List<EkycStep> steps;
 
   @override
-  State<EkycFirstPage> createState() => _EkycFirstPageState();
+  State<EkycStart> createState() => _EkycStartState();
 }
 
-class _EkycFirstPageState extends State<EkycFirstPage> {
-  final totalIndex = 6;
+class _EkycStartState extends State<EkycStart> {
   int currentIndex = 0;
+
+  bool isShowBottomButtonAtInitial(int index) {
+    if (index != 0) return false;
+    return true;
+  }
 
   @override
   void initState() {
@@ -90,68 +210,13 @@ class _EkycFirstPageState extends State<EkycFirstPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<EkycStep> steps = [
-      EkycStep(
-        content: FirstPage(isDisableBottomBtn: (bool value) {
-          // print(value);
-          // isDisableBottomBtnCallBack(value);
-          widget.isDisableBottomBtnCallBack.call(value);
-        }),
-        state: EkycStepState.complete,
-        isDisableBottomBtn: widget.disableBottomBtn,
-      ),
-      EkycStep(
-        content: SecondPage(isDisableBottomBtn: (bool value) {
-          // print(value);
-          // isDisableBottomBtnCallBack(value);
-          widget.isDisableBottomBtnCallBack.call(value);
-        }),
-        state: EkycStepState.indexed,
-        isDisableBottomBtn: widget.disableBottomBtn,
-      ),
-      EkycStep(
-        content: ThirdPage(isDisableBottomBtn: (bool value) {
-          // print(value);
-          // isDisableBottomBtnCallBack(value);
-          widget.isDisableBottomBtnCallBack.call(value);
-        }),
-        state: EkycStepState.indexed,
-        isDisableBottomBtn: widget.disableBottomBtn,
-      ),
-      EkycStep(
-        content: FourthPage(isDisableBottomBtn: (bool value) {
-          // print(value);
-          // isDisableBottomBtnCallBack(value);
-          widget.isDisableBottomBtnCallBack.call(value);
-        }),
-        state: EkycStepState.indexed,
-        isDisableBottomBtn: widget.disableBottomBtn,
-      ),
-      EkycStep(
-        content: FifthPage(isDisableBottomBtn: (bool value) {
-          // print(value);
-          // isDisableBottomBtnCallBack(value);
-          widget.isDisableBottomBtnCallBack.call(value);
-        }),
-        state: EkycStepState.indexed,
-        isDisableBottomBtn: widget.disableBottomBtn,
-      ),
-      EkycStep(
-        content: SixthPage(isDisableBottomBtn: (bool value) {
-          // print(value);
-          // isDisableBottomBtnCallBack(value);
-          widget.isDisableBottomBtnCallBack.call(value);
-        }),
-        state: EkycStepState.indexed,
-        isDisableBottomBtn: widget.disableBottomBtn,
-      ),
-    ];
     return EkycStepper(
+      isShowBottomButton: widget.isShowBottomButtonStates[currentIndex],
       currentStep: currentIndex,
-      ekycSteps: steps,
+      ekycSteps: widget.steps,
       onStepContinue: () {
         setState(() {
-          currentIndex = currentIndex + 1 >= steps.length
+          currentIndex = currentIndex + 1 >= widget.steps.length
               ? currentIndex
               : currentIndex + 1;
         });

@@ -11,6 +11,11 @@ const TextStyle kLabelButtonStyle = TextStyle(
   fontSize: 30,
 );
 
+// const ButtonStyle kButtonDefaultStyle = ButtonStyle(
+//   backgroundColor: kBackgroundColor,
+//   padding: MaterialStateProperty.all(EdgeInsets.all(20))
+// );
+
 const TextStyle kTileStyle = TextStyle(
     color: Color(0xFFa51d2a), fontSize: 15, fontWeight: FontWeight.bold);
 

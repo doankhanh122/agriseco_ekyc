@@ -1,19 +1,54 @@
 import 'package:agriseco/src/components/page_layout.dart';
-import 'package:agriseco/src/components/shared/camera_app.dart';
+import 'package:agriseco/src/components/shared/camera_rect.dart';
+import 'package:agriseco/src/components/shared/detail_row_with_circle_lead.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SecondPage extends StatelessWidget {
-  final ValueChanged<bool> isDisableBottomBtn;
+import '../constants.dart';
 
-  const SecondPage({Key key, this.isDisableBottomBtn}) : super(key: key);
+class SecondPage extends StatefulWidget {
+  const SecondPage({
+    Key key,
+    this.isShowBottomButtonCallback,
+  }) : super(key: key);
+  final ValueChanged<bool> isShowBottomButtonCallback;
+
+  @override
+  State<SecondPage> createState() => _SecondPageState();
+}
+
+class _SecondPageState extends State<SecondPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return PageLayout(
       content: Column(
         children: [
-          CameraApp(),
+          Container(
+            margin: EdgeInsets.only(bottom: 8),
+            child: Text(
+              'Chụp mặt trước CMND/CCCD',
+              style: kTileStyle,
+            ),
+          ),
+          DetailRowWithCircleLead(
+            child: Flexible(
+              child: Text(
+                  'Vui lòng chụp sao cho các cạnh sát với khung hình nhất có thể.'),
+            ),
+          ),
+          DetailRowWithCircleLead(
+            child: Flexible(
+              child: Text('Tránh rung tay, lóe sáng khi chụp.'),
+            ),
+          ),
+          CameraRect(cameraCapturePressed: (bool isCaptured) {
+            widget.isShowBottomButtonCallback.call(isCaptured);
+          }),
         ],
       ),
     );

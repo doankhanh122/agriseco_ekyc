@@ -8,10 +8,9 @@ import 'contents/content_4.dart';
 
 @immutable
 class FirstPage extends StatefulWidget {
-  FirstPage({this.choices, this.isDisableBottomBtn});
+  FirstPage({this.choices, this.isShowBottomButtonCallback});
   final List<AccountChoice> choices;
-
-  final ValueChanged<bool> isDisableBottomBtn;
+  final ValueChanged<bool> isShowBottomButtonCallback;
 
   @override
   State<FirstPage> createState() => _FirstPageState();
@@ -55,9 +54,9 @@ class _FirstPageState extends State<FirstPage> {
   void _onChoiceTab(int index) {
     // Check can go to next Page
     if ([1, 2, 3, 7].contains(index)) {
-      widget.isDisableBottomBtn.call(true);
+      widget.isShowBottomButtonCallback.call(false);
     } else {
-      widget.isDisableBottomBtn.call(false);
+      widget.isShowBottomButtonCallback.call(true);
     }
     //
     setState(() {

@@ -10,15 +10,19 @@ import 'package:flutter/material.dart';
 // }
 
 /// CameraApp is the Main Application.
-class CameraApp extends StatefulWidget {
+class CameraRect extends StatefulWidget {
   /// Default Constructor
-  const CameraApp();
+  const CameraRect({
+    this.cameraCapturePressed,
+  });
+
+  final ValueChanged<bool> cameraCapturePressed;
 
   @override
-  State<CameraApp> createState() => _CameraAppState();
+  State<CameraRect> createState() => _CameraRectState();
 }
 
-class _CameraAppState extends State<CameraApp> {
+class _CameraRectState extends State<CameraRect> {
   List<CameraDescription> _cameras = [];
   CameraController controller;
   int cameraId;
@@ -55,13 +59,9 @@ class _CameraAppState extends State<CameraApp> {
   void initState() {
     super.initState();
     // getCameras();
+
     cameraId = 0;
     getCameras();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
   }
 
   @override
@@ -92,55 +92,82 @@ class _CameraAppState extends State<CameraApp> {
               child: CameraPreview(controller),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
+          Positioned(
+            top: size.width * 0.9 * 3 / 4 + 8,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ]),
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            cameraId = cameraId == 0 ? 1 : 0;
+                            widget.cameraCapturePressed.call(false);
+                          });
+                          getCameras();
+                        },
+                        child: Icon(
+                          Icons.flip_camera_ios_sharp,
+                          color: Colors.black54,
+                        ),
                       ),
-                    ]),
-                child: TextButton(
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ]),
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Icon(
+                          Icons.rotate_right_outlined,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      cameraId = cameraId == 0 ? 1 : 0;
-                    });
-                    getCameras();
+                    controller.pausePreview();
+                    widget.cameraCapturePressed.call(true);
                   },
-                  child: Icon(
-                    Icons.flip_camera_ios_sharp,
-                    color: Colors.black54,
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(kBackgroundColor),
+                      padding: MaterialStateProperty.all(EdgeInsets.all(8))),
+                  child: Row(
+                    children: [
+                      Icon(Icons.camera_alt_outlined),
+                      Text(' Chụp hính'),
+                    ],
                   ),
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
-                      ),
-                    ]),
-                child: TextButton(
-                  onPressed: () {},
-                  child: Icon(
-                    Icons.rotate_right_outlined,
-                    color: Colors.black54,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       );
@@ -206,9 +233,9 @@ class _CameraFrameClipper extends CustomClipper<RRect> {
   RRect getClip(Size size) {
     RRect rect = RRect.fromLTRBR(
       size.width * 0.05,
-      size.height * 0.1,
+      8,
       size.width * 0.95,
-      size.height * 0.5,
+      size.width * 0.9 * 3 / 4,
       Radius.circular(40),
     );
     // Rect rect = Rect.fromLTRB(
