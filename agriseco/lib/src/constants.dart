@@ -19,9 +19,17 @@ const TextStyle kLabelButtonStyle = TextStyle(
 const TextStyle kTileStyle = TextStyle(
     color: Color(0xFFa51d2a), fontSize: 15, fontWeight: FontWeight.bold);
 
-const TextStyle kBodyStyle = TextStyle(
+const TextStyle kBodyTextStyle = TextStyle(
   color: Colors.black38,
-  fontSize: 10,
+);
+const TextStyle kBodyItalicTextStyle = TextStyle(
+  color: Colors.black38,
+  fontStyle: FontStyle.italic,
+);
+
+const TextStyle kBodyBoldTextStyle = TextStyle(
+  color: Colors.black87,
+  fontWeight: FontWeight.bold,
 );
 
 final Widget a = Stepper(

@@ -8,9 +8,13 @@ import 'contents/content_4.dart';
 
 @immutable
 class FirstPage extends StatefulWidget {
-  FirstPage({this.choices, this.isShowBottomButtonCallback});
+  FirstPage(
+      {this.choices,
+      this.isShowBottomButtonCallback,
+      this.isAgribankChoicedCallback});
   final List<AccountChoice> choices;
   final ValueChanged<bool> isShowBottomButtonCallback;
+  final ValueChanged<bool> isAgribankChoicedCallback;
 
   @override
   State<FirstPage> createState() => _FirstPageState();
@@ -57,6 +61,12 @@ class _FirstPageState extends State<FirstPage> {
       widget.isShowBottomButtonCallback.call(false);
     } else {
       widget.isShowBottomButtonCallback.call(true);
+    }
+
+    if (index == 5) {
+      widget.isAgribankChoicedCallback.call(true);
+    } else {
+      widget.isAgribankChoicedCallback.call(false);
     }
     //
     setState(() {

@@ -2,6 +2,7 @@ library agriseco;
 
 import 'package:agriseco/src/components/ekyc_stepper.dart';
 import 'package:agriseco/src/constants.dart';
+import 'package:agriseco/src/pages/page_1b.dart';
 import 'package:agriseco/src/pages/page_5.dart';
 import 'package:agriseco/src/pages/page_1.dart';
 import 'package:agriseco/src/pages/page_4.dart';
@@ -34,28 +35,33 @@ class _AgrisecoState extends State<Agriseco> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    // isShowBottomButton = true;
-    for (int i = 0; i < 7; i++) {
-      isShowBottomButtonStates[i] = i == 0 ? true : false;
-    }
-
-    steps = [
+  //Khi KH la CBNV AGRIBANK. them 1 Step xác nhận email, đơn vị công tác
+  //đồng thời update lại trạng tái BottomButton (Tiếp tục)
+  //Khởi tạo step
+  List<EkycStep> makingSteps({bool isAgribank}) {
+    int a = isAgribank ? 1 : 0;
+    List<EkycStep> result = [];
+    result = [
       EkycStep(
-        content: FirstPage(isShowBottomButtonCallback: (bool value) {
-          setState(() {
+        content: FirstPage(
+          isShowBottomButtonCallback: (bool value) {
             updateBottomButtonStates(index: 0, newValue: value);
-          });
-        }),
+            setState(() {});
+          },
+          // Chọn là khách hàng Agribank để kích hoạt sự kiện
+          isAgribankChoicedCallback: (bool value) {
+            setState(() {
+              steps = makingSteps(isAgribank: value);
+            });
+          },
+        ),
         state: EkycStepState.complete,
       ),
       EkycStep(
         content: SecondPage(isShowBottomButtonCallback: (bool value) {
+          print(value);
           setState(() {
-            updateBottomButtonStates(index: 1, newValue: value);
+            updateBottomButtonStates(index: a + 1, newValue: value);
           });
         }),
         state: EkycStepState.indexed,
@@ -63,7 +69,7 @@ class _AgrisecoState extends State<Agriseco> {
       EkycStep(
         content: ThirdPage(isShowBottomButtonCallback: (bool value) {
           setState(() {
-            updateBottomButtonStates(index: 2, newValue: value);
+            updateBottomButtonStates(index: a + 2, newValue: value);
           });
         }),
         state: EkycStepState.indexed,
@@ -71,7 +77,7 @@ class _AgrisecoState extends State<Agriseco> {
       EkycStep(
         content: FourthPage(isShowBottomButtonCallback: (bool value) {
           setState(() {
-            updateBottomButtonStates(index: 3, newValue: value);
+            updateBottomButtonStates(index: a + 3, newValue: value);
           });
         }),
         state: EkycStepState.indexed,
@@ -79,7 +85,7 @@ class _AgrisecoState extends State<Agriseco> {
       EkycStep(
         content: FifthPage(isDisableBottomBtn: (bool value) {
           setState(() {
-            updateBottomButtonStates(index: 4, newValue: value);
+            updateBottomButtonStates(index: a + 4, newValue: value);
           });
         }),
         state: EkycStepState.indexed,
@@ -87,18 +93,39 @@ class _AgrisecoState extends State<Agriseco> {
       EkycStep(
         content: SixthPage(isDisableBottomBtn: (bool value) {
           setState(() {
-            updateBottomButtonStates(index: 5, newValue: value);
+            updateBottomButtonStates(index: a + 5, newValue: value);
           });
         }),
         state: EkycStepState.indexed,
       ),
     ];
+
+    // Khi KH la CBNV, kich hoat thêm step
+    if (isAgribank) {
+      result.insert(
+          1,
+          EkycStep(
+            content: AgribankPage(isShowBottomButtonCallback: (bool value) {
+              setState(() {
+                updateBottomButtonStates(index: 1, newValue: value);
+              });
+            }),
+            state: EkycStepState.complete,
+          ));
+    }
+
+    return result;
   }
 
   @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+
+    for (int i = 0; i < 7; i++) {
+      isShowBottomButtonStates[i] = i == 0 ? true : false;
+    }
+
+    steps = makingSteps(isAgribank: false);
   }
 
   @override
@@ -123,80 +150,31 @@ class _AgrisecoState extends State<Agriseco> {
       body: EkycStart(
         steps: steps,
         isShowBottomButtonStates: isShowBottomButtonStates,
+        stepTappedCallBack: (int stepIndex) {
+          setState(() {
+            // Nếu quay trở về tap đầu tiên, reset lại các Steps về mặc định
+            if (stepIndex == 0) steps = makingSteps(isAgribank: false);
+          });
+        },
       ),
     );
   }
 }
 
-// List<EkycStep> steps = [
-//   EkycStep(
-//     content: FirstPage(isDisableBottomBtn: (bool value) {
-//       // print(value);
-//       // isDisableBottomBtnCallBack(value);
-//       widget.isDisableBottomBtnCallBack.call(value);
-//     }),
-//     state: EkycStepState.complete,
-//     bottomButtonState: widget.disableBottomBtn,
-//   ),
-//   EkycStep(
-//     content: SecondPage(isDisableBottomBtn: (bool value) {
-//       // print(value);
-//       // isDisableBottomBtnCallBack(value);
-//       widget.isDisableBottomBtnCallBack.call(value);
-//     }),
-//     state: EkycStepState.indexed,
-//     bottomButtonState: widget.disableBottomBtn,
-//   ),
-//   EkycStep(
-//     content: ThirdPage(isDisableBottomBtn: (bool value) {
-//       // print(value);
-//       // isDisableBottomBtnCallBack(value);
-//       widget.isDisableBottomBtnCallBack.call(value);
-//     }),
-//     state: EkycStepState.indexed,
-//     bottomButtonState: widget.disableBottomBtn,
-//   ),
-//   EkycStep(
-//     content: FourthPage(isDisableBottomBtn: (bool value) {
-//       // print(value);
-//       // isDisableBottomBtnCallBack(value);
-//       widget.isDisableBottomBtnCallBack.call(value);
-//     }),
-//     state: EkycStepState.indexed,
-//     bottomButtonState: widget.disableBottomBtn,
-//   ),
-//   EkycStep(
-//     content: FifthPage(isDisableBottomBtn: (bool value) {
-//       // print(value);
-//       // isDisableBottomBtnCallBack(value);
-//       widget.isDisableBottomBtnCallBack.call(value);
-//     }),
-//     state: EkycStepState.indexed,
-//     bottomButtonState: widget.disableBottomBtn,
-//   ),
-//   EkycStep(
-//     content: SixthPage(isDisableBottomBtn: (bool value) {
-//       // print(value);
-//       // isDisableBottomBtnCallBack(value);
-//       widget.isDisableBottomBtnCallBack.call(value);
-//     }),
-//     state: EkycStepState.indexed,
-//     bottomButtonState: widget.disableBottomBtn,
-//   ),
-// ];
-
 class EkycStart extends StatefulWidget {
-  const EkycStart({this.isShowBottomButtonStates, this.steps});
+  const EkycStart(
+      {this.isShowBottomButtonStates, this.steps, this.stepTappedCallBack});
 
   final Map<int, bool> isShowBottomButtonStates;
   final List<EkycStep> steps;
+  final ValueChanged<int> stepTappedCallBack;
 
   @override
   State<EkycStart> createState() => _EkycStartState();
 }
 
 class _EkycStartState extends State<EkycStart> {
-  int currentIndex = 0;
+  int currentIndex = 4;
 
   bool isShowBottomButtonAtInitial(int index) {
     if (index != 0) return false;
@@ -222,6 +200,7 @@ class _EkycStartState extends State<EkycStart> {
         });
       },
       onStepTapped: (int index) {
+        widget.stepTappedCallBack.call(index);
         setState(() {
           currentIndex = index;
         });

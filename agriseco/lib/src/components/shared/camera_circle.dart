@@ -77,20 +77,39 @@ class _CameraCircleState extends State<CameraCircle> {
       );
     } else {
       return Stack(
-        clipBehavior: Clip.none,
+        clipBehavior: Clip.antiAlias,
         alignment: AlignmentDirectional.center,
         children: [
-          ClipOval(
-            clipper: _CameraCircleClipper(),
-            child: ClipRRect(
-              // clipper: _CameraFrameClipper(),
-              child: Container(
-                child: CameraPreview(controller),
-              ),
+          SizedBox.square(
+            dimension: size.width,
+          ),
+          Positioned(
+            top: -size.height * 0.5 + size.width * 0.35 + 8,
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: size.height,
+                  width: size.width,
+                  child: Align(
+                    child: ClipOval(
+                      clipper: _CameraCircleClipper(),
+                      child: CameraPreview(
+                        controller,
+                      ),
+                    ),
+                  ),
+                ),
+                // ClipOval(
+                //   clipper: _CameraCircleClipper(),
+                //   child: CameraPreview(
+                //     controller,
+                //   ),
+                // ),
+              ],
             ),
           ),
           Positioned(
-            top: size.width * 0.9 * 3 / 4 + 8,
+            top: size.width * 0.7 + 8,
             child: Column(
               children: [
                 Row(
@@ -229,8 +248,8 @@ class _CameraCircleClipper extends CustomClipper<Rect> {
   @override
   Rect getClip(Size size) {
     return Rect.fromCircle(
-        center: Offset(size.width / 2, size.width * 0.4 + 10),
-        radius: size.width * 0.4);
+        center: Offset(size.width * 0.5, size.height * 0.5),
+        radius: size.width * 0.35);
   }
 
   @override
@@ -239,26 +258,26 @@ class _CameraCircleClipper extends CustomClipper<Rect> {
   }
 }
 
-class _CameraFrameClipper extends CustomClipper<RRect> {
-  @override
-  RRect getClip(Size size) {
-    RRect rect = RRect.fromLTRBR(
-      size.width * 0.05,
-      8,
-      size.width * 0.95,
-      size.width * 0.9 * 3 / 4,
-      Radius.circular(40),
-    );
-    // RRect rect = RRect.fromRectAndRadius(
-    //     Rect.fromCircle(
-    //         center: Offset(size.width / 2, size.height / 2),
-    //         radius: size.width * 0.4),
-    //     Radius.circular(size.width * 0.2));
-    return rect;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<RRect> oldClipper) {
-    return false;
-  }
-}
+// class _CameraFrameClipper extends CustomClipper<RRect> {
+//   @override
+//   RRect getClip(Size size) {
+//     RRect rect = RRect.fromLTRBR(
+//       size.width * 0.05,
+//       8,
+//       size.width * 0.95,
+//       size.width * 0.9 * 3 / 4,
+//       Radius.circular(40),
+//     );
+//     // RRect rect = RRect.fromRectAndRadius(
+//     //     Rect.fromCircle(
+//     //         center: Offset(size.width / 2, size.height / 2),
+//     //         radius: size.width * 0.4),
+//     //     Radius.circular(size.width * 0.2));
+//     return rect;
+//   }
+//
+//   @override
+//   bool shouldReclip(covariant CustomClipper<RRect> oldClipper) {
+//     return false;
+//   }
+// }
