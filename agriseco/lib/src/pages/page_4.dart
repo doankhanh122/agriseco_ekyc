@@ -31,15 +31,9 @@ class _FourthPageState extends State<FourthPage> {
   @override
   Widget build(BuildContext context) {
     return PageLayout(
+      title: 'Xác thực khuôn mặt',
       content: Column(
         children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 8),
-            child: Text(
-              'Xác thực khuôn mặt',
-              style: kTileStyle,
-            ),
-          ),
           DetailRowWithCircleLead(
             child: Flexible(
               child: Text(text1),

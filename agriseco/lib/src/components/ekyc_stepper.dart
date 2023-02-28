@@ -91,11 +91,7 @@ class _EkycStepperState extends State<EkycStepper> {
           ),
         ),
         Expanded(
-          child: ListView(
-            children: [
-              widget.ekycSteps[widget.currentStep].content,
-            ],
-          ),
+          child: widget.ekycSteps[widget.currentStep].content,
         ),
         _BottomButton(
           nextPage: widget.onStepContinue,

@@ -107,15 +107,9 @@ class _FirstPageState extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
     return PageLayout(
+      title: 'Mở tài khoản chứng khoán trực tuyến',
       content: Column(
         children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 8),
-            child: Text(
-              'Mở tài khoản chứng khoán trực tuyến',
-              style: kTileStyle,
-            ),
-          ),
           Row(
             children: [
               Text(

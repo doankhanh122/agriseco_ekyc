@@ -67,14 +67,9 @@ class _CameraCircleState extends State<CameraCircle> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    if (_cameras.isEmpty)
-      return TextButton(
-        child: Text('Cameras'),
-      );
+    if (_cameras.isEmpty) return Text('Cameras');
     if (!controller.value.isInitialized) {
-      return TextButton(
-        child: Text('Cameras'),
-      );
+      return Text('Cameras');
     } else {
       return Stack(
         clipBehavior: Clip.antiAlias,

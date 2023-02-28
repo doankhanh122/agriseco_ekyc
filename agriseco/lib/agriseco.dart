@@ -30,8 +30,22 @@ class _AgrisecoState extends State<Agriseco> {
 
   void updateBottomButtonStates({int index, bool newValue}) {
     for (int i = 0; i < isShowBottomButtonStates.length; i++) {
-      isShowBottomButtonStates[i] =
-          i == index ? newValue : (i == 0 ? true : false);
+      // isShowBottomButtonStates[i] =
+      //     i == index ? newValue : (i == 0 ? true : false);
+
+      if (i == index) {
+        isShowBottomButtonStates[i] = newValue;
+      } else {
+        switch (i) {
+          case 0:
+          case 4:
+            isShowBottomButtonStates[i] = true;
+            break;
+
+          default:
+            isShowBottomButtonStates[i] = false;
+        }
+      }
     }
   }
 
@@ -147,15 +161,20 @@ class _AgrisecoState extends State<Agriseco> {
         // ),
         elevation: 0,
       ),
-      body: EkycStart(
-        steps: steps,
-        isShowBottomButtonStates: isShowBottomButtonStates,
-        stepTappedCallBack: (int stepIndex) {
-          setState(() {
-            // Nếu quay trở về tap đầu tiên, reset lại các Steps về mặc định
-            if (stepIndex == 0) steps = makingSteps(isAgribank: false);
-          });
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
         },
+        child: EkycStart(
+          steps: steps,
+          isShowBottomButtonStates: isShowBottomButtonStates,
+          stepTappedCallBack: (int stepIndex) {
+            setState(() {
+              // Nếu quay trở về tap đầu tiên, reset lại các Steps về mặc định
+              if (stepIndex == 0) steps = makingSteps(isAgribank: false);
+            });
+          },
+        ),
       ),
     );
   }
@@ -174,7 +193,7 @@ class EkycStart extends StatefulWidget {
 }
 
 class _EkycStartState extends State<EkycStart> {
-  int currentIndex = 4;
+  int currentIndex = 0;
 
   bool isShowBottomButtonAtInitial(int index) {
     if (index != 0) return false;

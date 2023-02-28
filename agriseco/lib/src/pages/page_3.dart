@@ -26,15 +26,9 @@ class _ThirdPageState extends State<ThirdPage> {
   @override
   Widget build(BuildContext context) {
     return PageLayout(
+      title: 'Chụp mặt sau CMND/CCCD',
       content: Column(
         children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 8),
-            child: Text(
-              'Chụp mặt sau CMND/CCCD',
-              style: kTileStyle,
-            ),
-          ),
           DetailRowWithCircleLead(
             child: Flexible(
               child: Text(

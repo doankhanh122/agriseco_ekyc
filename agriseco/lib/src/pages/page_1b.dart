@@ -37,15 +37,9 @@ class _AgribankPageState extends State<AgribankPage> {
   @override
   Widget build(BuildContext context) {
     return PageLayout(
+      title: 'Xác nhận CBNV Agribank',
       content: Column(
         children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 8),
-            child: Text(
-              'Xác nhận CBNV Agribank',
-              style: kTileStyle,
-            ),
-          ),
           DetailRowWithCircleLead(
             child: Flexible(child: Text('Đơn vị công tác: (*)')),
             isLead: false,

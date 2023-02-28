@@ -26,15 +26,9 @@ class _SecondPageState extends State<SecondPage> {
   @override
   Widget build(BuildContext context) {
     return PageLayout(
+      title: 'Chụp mặt trước CMND/CCCD',
       content: Column(
         children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 8),
-            child: Text(
-              'Chụp mặt trước CMND/CCCD',
-              style: kTileStyle,
-            ),
-          ),
           DetailRowWithCircleLead(
             child: Flexible(
               child: Text(

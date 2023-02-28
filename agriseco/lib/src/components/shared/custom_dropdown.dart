@@ -43,7 +43,7 @@ class _CustomDropdownState extends State<CustomDropdown>
 
   int _maxListItem;
   double _height;
-  double _rowHeight;
+  Offset _offset;
   double _listTileHeight;
   TextStyle _listTileTextStyle;
   AnimationController _controller;
@@ -96,7 +96,6 @@ class _CustomDropdownState extends State<CustomDropdown>
       _height = _dropDownList.length < _maxListItem
           ? _dropDownList.length * _listTileHeight
           : _listTileHeight * _maxListItem.toDouble();
-      _rowHeight = _height / _maxListItem;
     });
   }
 
@@ -177,20 +176,27 @@ class _CustomDropdownState extends State<CustomDropdown>
     final overlay = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
+    _offset = renderBox.localToGlobal(Offset.zero);
+    double posFromTop = _offset.dy;
+    double posFromBot = MediaQuery.of(context).size.height - posFromTop;
 
     double dropdownListHeight = _height + widget.listSpace;
-
+    double ht = dropdownListHeight + 120;
     _entry = OverlayEntry(builder: (context) {
       return Positioned(
         width: size.width,
         child: CompositedTransformFollower(
-          targetAnchor: Alignment.bottomCenter,
-          followerAnchor: Alignment.bottomCenter,
+          targetAnchor:
+              posFromBot < ht ? Alignment.topCenter : Alignment.bottomCenter,
+          followerAnchor:
+              posFromBot < ht ? Alignment.topCenter : Alignment.bottomCenter,
           link: _layerLink,
           showWhenUnlinked: false,
           offset: Offset(
             0,
-            dropdownListHeight + _listPadding.top,
+            posFromBot < ht
+                ? -dropdownListHeight - _listPadding.top
+                : dropdownListHeight + _listPadding.top,
           ),
           child: AnimatedBuilder(
             animation: _controller.view,
