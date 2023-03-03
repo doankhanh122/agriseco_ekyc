@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:agriseco/src/components/shared/auto_hide_widget.dart';
+import 'package:agriseco/src/components/shared/delay_widget.dart';
 import 'package:agriseco/src/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +25,7 @@ class _PageLayoutState extends State<PageLayout> {
   double _offset;
   bool _scrollToBottom;
   bool _scrollToTop;
+  bool _showScroll = false;
 
   @override
   void initState() {
@@ -34,10 +39,16 @@ class _PageLayoutState extends State<PageLayout> {
       _maxScrollExtent = scrollController.position.maxScrollExtent;
       _offset = scrollController.offset;
 
+      Timer t = Timer(Duration(seconds: 3), () {
+        _showScroll = false;
+      });
+
       if (_offset < _maxScrollExtent) {
         setState(() {
           _scrollToBottom = true;
           _scrollToTop = true;
+          _showScroll = true;
+          //
         });
       }
     });
@@ -71,34 +82,38 @@ class _PageLayoutState extends State<PageLayout> {
             ),
           ],
         ),
-        Positioned(
-            bottom: 0,
-            right: 0,
-            child: SafeArea(
-                child: Column(
-              children: [
-                _scrollToTop
-                    ? IconButton(
-                        onPressed: () {
-                          scrollController.animateTo(0,
-                              duration: Duration(milliseconds: 500),
-                              curve: Curves.easeIn);
-                        },
-                        icon: Icon(Icons.arrow_upward_outlined),
-                      )
-                    : Container(),
-                _scrollToBottom
-                    ? IconButton(
-                        onPressed: () {
-                          scrollController.animateTo(_maxScrollExtent,
-                              duration: Duration(milliseconds: 500),
-                              curve: Curves.easeIn);
-                        },
-                        icon: Icon(Icons.arrow_downward_outlined),
-                      )
-                    : Container(),
-              ],
-            ))),
+        _showScroll
+            ? Positioned(
+                bottom: 0,
+                right: 0,
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      _scrollToTop
+                          ? IconButton(
+                              onPressed: () {
+                                scrollController.animateTo(0,
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.easeIn);
+                              },
+                              icon: Icon(Icons.arrow_upward_outlined),
+                            )
+                          : Container(),
+                      _scrollToBottom
+                          ? IconButton(
+                              onPressed: () {
+                                scrollController.animateTo(_maxScrollExtent,
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.easeIn);
+                              },
+                              icon: Icon(Icons.arrow_downward_outlined),
+                            )
+                          : Container(),
+                    ],
+                  ),
+                ),
+              )
+            : Container(),
       ],
     );
   }
