@@ -46,20 +46,39 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return CameraView(
       cameraIndex: widget.cameraIndex,
       customPaint: _customPaint,
       onImage: (inputImage) {
-        processImage(inputImage);
+        processImage(inputImage, size);
       },
     );
   }
 
-  Future<void> processImage(InputImage inputImage) async {
+  Future<void> processImage(InputImage inputImage, Size size) async {
     if (_isBusy) return;
     _isBusy = true;
     setState(() {});
+
     final faces = await _faceDetector.processImage(inputImage);
+
+    // if (faces.isNotEmpty) print(faces[0].boundingBox.top);
+    // print('Top: ${inputImage.inputImageData.size.height / 2}');
+
+    faces.removeWhere((face) =>
+            face.boundingBox.top >
+                (inputImage.inputImageData.size.height / 2) ||
+            face.boundingBox.bottom <
+                (inputImage.inputImageData.size.height / 2) ||
+            face.boundingBox.left >
+                (inputImage.inputImageData.size.width / 2) ||
+            face.boundingBox.right <
+                (inputImage.inputImageData.size.width / 2) ||
+            (face.boundingBox.width) * 0.75 >
+                inputImage.inputImageData.size.width / 2
+        //
+        );
 
     widget.facesCallback.call(faces);
 

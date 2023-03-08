@@ -26,24 +26,38 @@ class _PageLayoutState extends State<PageLayout> {
   bool _scrollToBottom;
   bool _scrollToTop;
   bool _showScroll = false;
+  Timer _timer;
 
   @override
   void initState() {
     scrollController = ScrollController();
 
-    // _maxScrollExtent = scrollController.position.maxScrollExtent;
-    // _offset = scrollController.offset;
     _scrollToTop = false;
     _scrollToBottom = false;
     scrollController.addListener(() {
+      if (_timer != null) _timer.cancel();
       _maxScrollExtent = scrollController.position.maxScrollExtent;
       _offset = scrollController.offset;
 
-      Timer t = Timer(Duration(seconds: 3), () {
-        _showScroll = false;
+      _timer = Timer(Duration(seconds: 1), () {
+        setState(() {
+          _showScroll = false;
+        });
       });
 
-      if (_offset < _maxScrollExtent) {
+      if (_offset <= 0) {
+        setState(() {
+          _scrollToTop = false;
+        });
+      }
+
+      if (_offset >= _maxScrollExtent) {
+        setState(() {
+          _scrollToBottom = false;
+        });
+      }
+
+      if (_offset < _maxScrollExtent && _offset > 0) {
         setState(() {
           _scrollToBottom = true;
           _scrollToTop = true;
@@ -53,6 +67,13 @@ class _PageLayoutState extends State<PageLayout> {
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (_timer != null) _timer.cancel();
+
+    super.dispose();
   }
 
   @override
@@ -87,27 +108,32 @@ class _PageLayoutState extends State<PageLayout> {
                 bottom: 0,
                 right: 0,
                 child: SafeArea(
-                  child: Column(
+                  child: Row(
                     children: [
                       _scrollToTop
-                          ? IconButton(
+                          ? _CircleIconButton(
+                              icon: Icon(
+                                Icons.arrow_upward_outlined,
+                                color: Colors.white,
+                              ),
                               onPressed: () {
                                 scrollController.animateTo(0,
                                     duration: Duration(milliseconds: 500),
                                     curve: Curves.easeIn);
                               },
-                              icon: Icon(Icons.arrow_upward_outlined),
                             )
                           : Container(),
                       _scrollToBottom
-                          ? IconButton(
+                          ? _CircleIconButton(
+                              icon: Icon(
+                                Icons.arrow_downward_outlined,
+                                color: Colors.white,
+                              ),
                               onPressed: () {
                                 scrollController.animateTo(_maxScrollExtent,
                                     duration: Duration(milliseconds: 500),
                                     curve: Curves.easeIn);
-                              },
-                              icon: Icon(Icons.arrow_downward_outlined),
-                            )
+                              })
                           : Container(),
                     ],
                   ),
@@ -115,6 +141,31 @@ class _PageLayoutState extends State<PageLayout> {
               )
             : Container(),
       ],
+    );
+  }
+}
+
+class _CircleIconButton extends StatelessWidget {
+  const _CircleIconButton({
+    @required this.icon,
+    @required this.onPressed,
+  });
+
+  final Function onPressed;
+  final Icon icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(right: 5),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.cyan.withOpacity(0.3),
+      ),
+      child: IconButton(
+        onPressed: onPressed,
+        icon: icon,
+      ),
     );
   }
 }

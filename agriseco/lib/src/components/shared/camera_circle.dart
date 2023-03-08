@@ -40,6 +40,7 @@ class _CameraCircleState extends State<CameraCircle> {
       ValueNotifier(EHeadDirection.straight);
 
   bool _didSmile = false;
+  ValueNotifier<bool> _reset = ValueNotifier(false);
 
   void getCameras() async {
     _cameras = await availableCameras();
@@ -101,10 +102,11 @@ class _CameraCircleState extends State<CameraCircle> {
         children: [
           !_didSmile
               ? _DirectionTitle(
+                  reset: _reset,
                   smileNotifier: _isSmileNotifier,
                   facesNotifier: _facesNotifier,
                   headNotifier: _headAngleNotifier,
-                  didSmile: () {
+                  allConditionPassed: () {
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                       widget.passedAllConditionCallback.call();
                       setState(() {
@@ -113,9 +115,7 @@ class _CameraCircleState extends State<CameraCircle> {
                     });
                   },
                 )
-              : Container(
-                  child: Text('OK'),
-                ),
+              : Container(),
           // isSmile.value ? Text('Smiling') : Text('Smile please!'),
 
           Stack(
@@ -279,11 +279,14 @@ class _CameraCircleState extends State<CameraCircle> {
                 ]),
             child: TextButton(
               onPressed: () {
+                if (!_reset.value) _reset.value = true;
+                getCameras();
+                if (_reset.value) _reset.value = false;
+
                 setState(() {
                   cameraId = cameraId == 0 ? 1 : 0;
                   widget.cameraCapturePressed.call(false);
                 });
-                getCameras();
               },
               child: Icon(
                 Icons.flip_camera_ios_sharp,
@@ -389,62 +392,66 @@ class _CameraCircleClipper extends CustomClipper<Rect> {
 // }
 
 class _DirectionTitle extends StatelessWidget {
-  const _DirectionTitle(
-      {@required this.smileNotifier,
-      @required this.facesNotifier,
-      @required this.headNotifier,
-      this.didSmile});
+  const _DirectionTitle({
+    @required this.smileNotifier,
+    @required this.facesNotifier,
+    @required this.headNotifier,
+    this.allConditionPassed,
+    @required this.reset,
+  });
 
   final ValueNotifier<bool> smileNotifier;
   final ValueNotifier<List<Face>> facesNotifier;
   final ValueNotifier<EHeadDirection> headNotifier;
-  final VoidCallback didSmile;
+  final VoidCallback allConditionPassed;
+  final ValueNotifier<bool> reset;
 
   @override
   Widget build(BuildContext context) {
-    // return Text(isSmileNotifier.value.toString());
-
-    List<StepFaceDetection> _steps = [
-      StepFaceDetection(1, false, 'Have 1 face'),
-      StepFaceDetection(2, false, 'Straight 3s'),
-      StepFaceDetection(3, false, 'Turn left slowly'),
-      StepFaceDetection(4, false, 'Turn right slowly'),
-    ];
-
     bool _didSmile = false, _didTurnLeft = false, _didTurnRight = false;
     return AnimatedBuilder(
-      animation: Listenable.merge([smileNotifier, facesNotifier, headNotifier]),
+      animation:
+          Listenable.merge([smileNotifier, facesNotifier, headNotifier, reset]),
       builder: (BuildContext context, Widget child) {
-        // bool _isSmiled = false;
-        // if (isSmileNotifier.value) {
-        //   _isSmiled = true;
-        // }
         int _facesCount = facesNotifier.value.length;
         bool isSmile = smileNotifier.value;
         EHeadDirection _headAngle = headNotifier.value;
 
-        print(_headAngle);
+        print(reset.value);
+        if (reset.value) {
+          _didSmile = false;
+          _didTurnLeft = false;
+          _didTurnRight = false;
+        }
 
         Widget _headCondition(EHeadDirection value) {
           if (value == EHeadDirection.straight && !_didTurnLeft) {
-            return Text('Hãy quay đầu sang trái');
+            return DirectionAlert(
+              text: 'Hãy quay đầu sang trái',
+            );
           } else if (value == EHeadDirection.left && !_didTurnRight) {
             _didTurnLeft = true;
-            return Text('Hãy quay đầu sang phải');
+            return DirectionAlert(
+              text: 'Hãy quay đầu sang phải',
+            );
           } else if (value == EHeadDirection.right && _didTurnLeft) {
             _didTurnRight = true;
           }
           if (_didTurnLeft && _didTurnRight) {
-            didSmile.call();
+            allConditionPassed.call();
             return Text('OK');
           }
 
-          return Text('Hãy quay đầu sang phải');
+          return DirectionAlert(
+            text: 'Hãy quay đầu sang phải',
+          );
         }
 
         Widget _smileCondition(bool isSmile) {
           if (!isSmile && !_didSmile) {
-            return Text('Hãy mỉm cười!');
+            return DirectionAlert(
+              text: 'Hãy mỉm cười!',
+            );
           } else {
             _didSmile = true;
             return _headCondition(_headAngle);
@@ -455,12 +462,16 @@ class _DirectionTitle extends StatelessWidget {
           // EHeadDirection currentHeadDirection = getHeadDirection(_headAngle);
           if (facesCount > 1) {
             _didSmile = _didTurnLeft = _didTurnRight = false;
-            return Text("Vui lòng chỉ đưa 1 gương mặt vào khuôn hình");
+            return DirectionAlert(
+              text: "Vui lòng chỉ đưa 1 gương mặt vào khuôn hình",
+            );
           }
 
           if (facesCount == 0) {
             _didSmile = _didTurnLeft = _didTurnRight = false;
-            return Text("Vui lòng đưa gương mặt vào khuôn hình");
+            return DirectionAlert(
+              text: "Vui lòng đưa gương mặt vào khuôn hình",
+            );
           }
           return _smileCondition(isSmile);
         }
@@ -493,5 +504,27 @@ class CirclePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class DirectionAlert extends StatelessWidget {
+  const DirectionAlert({@required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 }

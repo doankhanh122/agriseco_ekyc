@@ -73,6 +73,14 @@ class FaceDetectorPainter extends CustomPainter {
                           absoluteImageSize)) *
                   0.2;
 
+      // print(dx);
+      // print(dy);
+      // print(absoluteImageSize);
+
+      // print(translateX(
+      //         face.boundingBox.right, rotation, size, absoluteImageSize) -
+      //     translateX(face.boundingBox.left, rotation, size, absoluteImageSize));
+
       if (face.smilingProbability != null) {
         smileCalculate.call(face.smilingProbability);
         TextSpan span = new TextSpan(

@@ -193,7 +193,7 @@ class EkycStart extends StatefulWidget {
 }
 
 class _EkycStartState extends State<EkycStart> {
-  int currentIndex = 0;
+  int currentIndex = 3;
 
   bool isShowBottomButtonAtInitial(int index) {
     if (index != 0) return false;
