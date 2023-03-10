@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class Content3 extends StatelessWidget {
   const Content3({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

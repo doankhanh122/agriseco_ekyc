@@ -17,13 +17,13 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  TextEditingController _cnt;
-  FocusNode _textFieldFocusNode;
+  TextEditingController? _cnt;
+  FocusNode? _textFieldFocusNode;
 
   @override
   void initState() {
     _cnt = TextEditingController();
-    _cnt.text = widget.initialValue;
+    _cnt!.text = widget.initialValue;
     _textFieldFocusNode = FocusNode();
     super.initState();
   }

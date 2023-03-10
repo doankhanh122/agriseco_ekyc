@@ -1,7 +1,6 @@
 import 'package:agriseco/src/components/page_layout.dart';
 import 'package:agriseco/src/components/shared/custom_dropdown.dart';
 import 'package:agriseco/src/components/shared/custom_textfield.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import '../components/shared/detail_row_with_circle_lead.dart';
 import '../constants.dart';
@@ -22,7 +21,7 @@ class AgribankPage extends StatefulWidget {
   const AgribankPage({
     this.isShowBottomButtonCallback,
   });
-  final ValueChanged<bool> isShowBottomButtonCallback;
+  final ValueChanged<bool>? isShowBottomButtonCallback;
 
   @override
   State<AgribankPage> createState() => _AgribankPageState();
@@ -47,6 +46,7 @@ class _AgribankPageState extends State<AgribankPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: CustomDropdown(
+              controller: SingleValueDropDownController(),
               dropDownList: _listAgribank,
             ),
           ),

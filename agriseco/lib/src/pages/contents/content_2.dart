@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class Content2 extends StatelessWidget {
   const Content2({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -50,7 +50,7 @@ class Content2 extends StatelessWidget {
 
 class AddressDetail extends StatelessWidget {
   const AddressDetail(
-      {@required this.name, @required this.address, @required this.phone});
+      {required this.name, required this.address, required this.phone});
 
   final String name;
   final String address;

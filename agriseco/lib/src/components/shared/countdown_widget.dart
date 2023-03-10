@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class CountdownWidget extends StatefulWidget {
-  const CountdownWidget({this.seconds, this.whenDone});
+  const CountdownWidget({required this.seconds, required this.whenDone});
 
   final int seconds;
   final VoidCallback whenDone;
@@ -12,7 +12,7 @@ class CountdownWidget extends StatefulWidget {
 }
 
 class _CountdownWidgetState extends State<CountdownWidget> {
-  Timer _timer;
+  late Timer _timer;
   int _countdown = 0;
 
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AgrKeyboardVisibileBuilder extends StatefulWidget {
-  AgrKeyboardVisibileBuilder({@required this.builder});
+  AgrKeyboardVisibileBuilder({required this.builder});
   final Widget Function(BuildContext context, bool isKeyboardVisible) builder;
 
   @override

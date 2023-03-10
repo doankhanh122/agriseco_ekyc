@@ -1,7 +1,4 @@
-import 'package:agriseco/src/pages/page_1.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import '../constants.dart';
 
 enum EkycStepState {
@@ -14,8 +11,8 @@ enum EkycStepState {
 
 class EkycStep extends StatelessWidget {
   const EkycStep({
-    @required this.content,
-    @required this.state,
+    required this.content,
+    required this.state,
     // @required this.bottomButtonState,
     // @required this.bottomButtonStateChange,
   });
@@ -33,20 +30,20 @@ class EkycStep extends StatelessWidget {
 
 class EkycStepper extends StatefulWidget {
   const EkycStepper({
-    @required this.ekycSteps,
+    required this.ekycSteps,
     this.onStepTapped,
     this.currentStep,
     this.onStepContinue,
-    @required this.isShowBottomButton,
-  }) : assert(ekycSteps != null);
+    required this.isShowBottomButton,
+  });
 
   final List<EkycStep> ekycSteps;
-  final int currentStep;
+  final int? currentStep;
 
-  final ValueChanged<int> onStepTapped;
-  final VoidCallback onStepContinue;
+  final ValueChanged<int>? onStepTapped;
+  final VoidCallback? onStepContinue;
 
-  final bool isShowBottomButton;
+  final bool? isShowBottomButton;
 
   @override
   State<EkycStepper> createState() => _EkycStepperState();
@@ -54,7 +51,7 @@ class EkycStepper extends StatefulWidget {
 
 class _EkycStepperState extends State<EkycStepper> {
   final Map<int, EkycStepState> _stepStates = {};
-  bool isShowBottomButton;
+  bool? isShowBottomButton;
 
   @override
   void initState() {
@@ -69,7 +66,7 @@ class _EkycStepperState extends State<EkycStepper> {
   void didUpdateWidget(covariant EkycStepper oldWidget) {
     super.didUpdateWidget(oldWidget);
     for (int i = 0; i < widget.ekycSteps.length; i++) {
-      if (i <= widget.currentStep) {
+      if (i <= widget.currentStep!) {
         _stepStates[i] = EkycStepState.complete;
       } else {
         _stepStates[i] = EkycStepState.indexed;
@@ -91,11 +88,12 @@ class _EkycStepperState extends State<EkycStepper> {
           ),
         ),
         Expanded(
-          child: widget.ekycSteps[widget.currentStep].content,
+          child: widget.ekycSteps[widget.currentStep!].content,
         ),
         _BottomButton(
           nextPage: widget.onStepContinue,
           isShow: widget.isShowBottomButton,
+          buttonLabel: 'Tiếp tục',
         ),
       ],
     );
@@ -104,13 +102,13 @@ class _EkycStepperState extends State<EkycStepper> {
 
 class _HeaderProcess extends StatefulWidget {
   _HeaderProcess({
-    @required this.stepTotal,
-    @required this.onStepTab,
-    @required this.stepStates,
+    required this.stepTotal,
+    required this.onStepTab,
+    required this.stepStates,
   });
 
   final int stepTotal;
-  final ValueChanged<int> onStepTab;
+  final ValueChanged<int>? onStepTab;
   final Map<int, EkycStepState> stepStates;
 
   @override
@@ -133,10 +131,10 @@ class _HeaderProcessState extends State<_HeaderProcess> {
     return widget.stepTotal == index + 1;
   }
 
-  Widget _buildCircleStep({int stepIndex}) {
-    EkycStepState state = this.widget.stepStates[stepIndex];
+  Widget _buildCircleStep({required int stepIndex}) {
+    EkycStepState? state = this.widget.stepStates[stepIndex];
 
-    if (editingIndex() - stepIndex == 1) {}
+    // if (editingIndex() - stepIndex == 1) {}
     switch (state) {
       case EkycStepState.complete:
         return GestureDetector(
@@ -165,6 +163,7 @@ class _HeaderProcessState extends State<_HeaderProcess> {
         );
 
       case EkycStepState.indexed:
+      default:
         return GestureDetector(
           onTap: () {
             this.widget.onStepTab?.call(
@@ -229,21 +228,21 @@ class _HeaderProcessState extends State<_HeaderProcess> {
 
 class _BottomButton extends StatelessWidget {
   _BottomButton({
-    @required this.nextPage,
-    this.buttonLabel = 'Tiếp tục',
-    @required this.isShow,
+    required this.nextPage,
+    required this.buttonLabel,
+    required this.isShow,
   });
 
   final String buttonLabel;
-  final Function nextPage;
-  final bool isShow;
+  final Function? nextPage;
+  final bool? isShow;
 
   @override
   Widget build(BuildContext context) {
-    return isShow
+    return isShow!
         ? GestureDetector(
             onTap: () {
-              nextPage();
+              nextPage!();
             },
             child: Container(
               padding: EdgeInsets.all(10),

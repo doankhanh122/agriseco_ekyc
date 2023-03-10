@@ -2,16 +2,13 @@ import 'package:agriseco/src/components/page_layout.dart';
 import 'package:agriseco/src/components/shared/camera_rect.dart';
 import 'package:agriseco/src/components/shared/detail_row_with_circle_lead.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import '../constants.dart';
 
 class SecondPage extends StatefulWidget {
   const SecondPage({
-    Key key,
+    Key? key,
     this.isShowBottomButtonCallback,
   }) : super(key: key);
-  final ValueChanged<bool> isShowBottomButtonCallback;
+  final ValueChanged<bool>? isShowBottomButtonCallback;
 
   @override
   State<SecondPage> createState() => _SecondPageState();
@@ -41,7 +38,7 @@ class _SecondPageState extends State<SecondPage> {
             ),
           ),
           CameraRect(cameraCapturePressed: (bool isCaptured) {
-            widget.isShowBottomButtonCallback.call(isCaptured);
+            widget.isShowBottomButtonCallback!.call(isCaptured);
           }),
         ],
       ),

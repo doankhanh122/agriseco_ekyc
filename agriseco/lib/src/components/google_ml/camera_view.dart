@@ -4,35 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 class CameraView extends StatefulWidget {
-  const CameraView(
-      {this.customPaint, this.onImage, @required this.cameraIndex});
+  const CameraView({this.customPaint, this.onImage, required this.cameraIndex});
 
-  final CustomPaint customPaint;
-  final Function(InputImage inputImage) onImage;
-  final int cameraIndex;
+  final CustomPaint? customPaint;
+  final Function(InputImage inputImage)? onImage;
+  final int? cameraIndex;
 
   @override
   State<CameraView> createState() => _CameraViewState();
 }
 
 class _CameraViewState extends State<CameraView> {
-  CameraController _controller;
-  bool _changingCameraLens = false;
+  CameraController? _controller;
   List<CameraDescription> cameras = [];
-  int _cameraIndex;
+  int? _cameraIndex;
 
   Future<List<CameraDescription>> getCameras() async {
     cameras = await availableCameras();
+    return cameras;
   }
 
   Future _stopLiveFeed() async {
-    await _controller.dispose();
+    await _controller!.dispose();
     _controller = null;
   }
 
   Future _startLiveFeed() async {
     await getCameras();
-    final camera = cameras[_cameraIndex];
+    final camera = cameras[_cameraIndex!];
     _controller = CameraController(
       camera,
       ResolutionPreset.high,
@@ -40,10 +39,10 @@ class _CameraViewState extends State<CameraView> {
       enableAudio: false,
     );
 
-    _controller.initialize().then((value) {
+    _controller!.initialize().then((value) {
       if (!mounted) return;
 
-      _controller.startImageStream(_processCameraImage);
+      _controller!.startImageStream(_processCameraImage);
 
       setState(() {});
     }).catchError((Object e) {
@@ -78,10 +77,10 @@ class _CameraViewState extends State<CameraView> {
   @override
   Widget build(BuildContext context) {
     if (cameras.isEmpty) return Text('Cameras');
-    if (!_controller.value.isInitialized) {
+    if (!_controller!.value.isInitialized) {
       return Text('Cameras');
     } else {
-      Size size = MediaQuery.of(context).size;
+      // Size size = MediaQuery.of(context).size;
       // var scale = size.aspectRatio * _controller.value.aspectRatio;
       //
       // if (scale < 1) scale = 1 / scale;
@@ -94,9 +93,9 @@ class _CameraViewState extends State<CameraView> {
           fit: StackFit.expand,
           children: [
             Center(
-              child: CameraPreview(_controller),
+              child: CameraPreview(_controller!),
             ),
-            if (widget.customPaint != null) widget.customPaint,
+            if (widget.customPaint != null) widget.customPaint!,
           ],
         ),
       );
@@ -114,7 +113,7 @@ class _CameraViewState extends State<CameraView> {
     final Size imageSize =
         Size(image.width.toDouble(), image.height.toDouble());
 
-    final camera = cameras[_cameraIndex];
+    final camera = cameras[_cameraIndex!];
 
     final imageRotation =
         InputImageRotationValue.fromRawValue(camera.sensorOrientation);
@@ -146,6 +145,6 @@ class _CameraViewState extends State<CameraView> {
     final inputImage =
         InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
 
-    widget.onImage(inputImage);
+    widget.onImage!(inputImage);
   }
 }

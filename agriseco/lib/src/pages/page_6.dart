@@ -5,24 +5,22 @@ import 'package:agriseco/src/components/shared/detail_row_with_circle_lead.dart'
 import 'package:agriseco/src/constants.dart';
 import 'package:flutter/material.dart';
 
-import '../../agriseco.dart';
-
 const String contractLink =
     'https://hopdong.agr.vn/FileExportReport2/PrintFlex/A/6d35fff4fa305c74e76fef5664abc53d_';
 
 class SixthPage extends StatefulWidget {
-  final ValueChanged<bool> isDisableBottomBtn;
+  final ValueChanged<bool>? isDisableBottomBtn;
 
-  const SixthPage({Key key, this.isDisableBottomBtn}) : super(key: key);
+  const SixthPage({Key? key, this.isDisableBottomBtn}) : super(key: key);
 
   @override
   State<SixthPage> createState() => _SixthPageState();
 }
 
 class _SixthPageState extends State<SixthPage> {
-  bool _isShowContractDetail;
-  bool _isShowSignContract;
-  bool _isFinish;
+  late bool _isShowContractDetail;
+  late bool _isShowSignContract;
+  late bool _isFinish;
   ValueNotifier<bool> _isLoadingImage = ValueNotifier(true);
 
   @override
@@ -197,7 +195,7 @@ class _ContractFrameClipper extends CustomClipper<RRect> {
 
 class _ContractDetail extends StatelessWidget {
   const _ContractDetail(
-      {@required this.linkContract, @required this.hideContractCallback});
+      {required this.linkContract, required this.hideContractCallback});
   final String linkContract;
   final VoidCallback hideContractCallback;
 
@@ -237,7 +235,7 @@ class _ContractDetail extends StatelessWidget {
 
 class _NetworkImage extends StatelessWidget {
   _NetworkImage({
-    @required this.imageUrl,
+    required this.imageUrl,
   });
   final String imageUrl;
 
@@ -246,7 +244,7 @@ class _NetworkImage extends StatelessWidget {
     return Image.network(
       imageUrl,
       loadingBuilder: (BuildContext context, Widget child,
-          ImageChunkEvent loadingProgress) {
+          ImageChunkEvent? loadingProgress) {
         if (loadingProgress == null) {
           return child;
         }
@@ -257,13 +255,13 @@ class _NetworkImage extends StatelessWidget {
           child: CircularProgressIndicator(
             value: loadingProgress.expectedTotalBytes != null
                 ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes
+                    loadingProgress.expectedTotalBytes!
                 : null,
           ),
         );
       },
       errorBuilder:
-          (BuildContext context, Object exception, StackTrace stackTrace) {
+          (BuildContext context, Object exception, StackTrace? stackTrace) {
         return Text('Không tải được, vui lòng thử lại!');
       },
     );
@@ -273,7 +271,7 @@ class _NetworkImage extends StatelessWidget {
 class _SignContract extends StatelessWidget {
   const _SignContract({this.signContractCallback});
 
-  final VoidCallback signContractCallback;
+  final VoidCallback? signContractCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -308,7 +306,7 @@ class _SignContract extends StatelessWidget {
         CustomButton1(
             label: 'Ký hợp đồng',
             onTab: () {
-              signContractCallback.call();
+              signContractCallback!.call();
             }),
       ],
     );
@@ -326,14 +324,14 @@ class OTPTextField extends StatefulWidget {
 }
 
 class _OTPTextFieldState extends State<OTPTextField> {
-  List<TextEditingController> _textControllers;
-  List<FocusNode> _focusNodes;
+  late List<TextEditingController?> _textControllers;
+  late List<FocusNode?> _focusNodes;
 
   @override
   void initState() {
-    _textControllers = List<TextEditingController>.filled(widget.length, null,
+    _textControllers = List<TextEditingController?>.filled(widget.length, null,
         growable: false);
-    _focusNodes = List<FocusNode>.filled(widget.length, null, growable: false);
+    _focusNodes = List<FocusNode?>.filled(widget.length, null, growable: false);
 
     super.initState();
   }
@@ -341,7 +339,7 @@ class _OTPTextFieldState extends State<OTPTextField> {
   @override
   void dispose() {
     _textControllers.forEach((controller) {
-      controller.dispose();
+      controller!.dispose();
     });
 
     super.dispose();
@@ -356,8 +354,8 @@ class _OTPTextFieldState extends State<OTPTextField> {
   }
 
   Widget buildTextField(BuildContext context, int index) {
-    FocusNode focusNode = _focusNodes[index];
-    TextEditingController textEditingController = _textControllers[index];
+    FocusNode? focusNode = _focusNodes[index];
+    TextEditingController? textEditingController = _textControllers[index];
 
     // if focus node doesn't exist, create it.
     if (focusNode == null) {
@@ -396,15 +394,15 @@ class _OTPTextFieldState extends State<OTPTextField> {
               borderRadius: BorderRadius.circular(8)),
         ),
         onChanged: (String str) {
-          if (str.isNotEmpty) _focusNodes[index].unfocus();
+          if (str.isNotEmpty) _focusNodes[index]!.unfocus();
           if (index + 1 != widget.length && str.isNotEmpty) {
             FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
           }
 
           if (str.isEmpty) {
             if (index == 0) return;
-            _focusNodes[index].unfocus();
-            _focusNodes[index - 1].requestFocus();
+            _focusNodes[index]!.unfocus();
+            _focusNodes[index - 1]!.requestFocus();
           }
         },
       ),
@@ -412,8 +410,8 @@ class _OTPTextFieldState extends State<OTPTextField> {
   }
 
   void handleFocusChange(int index) {
-    FocusNode focusNode = _focusNodes[index];
-    TextEditingController controller = _textControllers[index];
+    FocusNode? focusNode = _focusNodes[index];
+    TextEditingController? controller = _textControllers[index];
 
     if (focusNode == null || controller == null) return;
 

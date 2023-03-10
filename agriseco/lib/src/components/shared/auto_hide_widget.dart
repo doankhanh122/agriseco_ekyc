@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class AutoHideWidget extends StatefulWidget {
   const AutoHideWidget(
-      {@required this.delay, @required this.child, this.restartWidget});
+      {required this.delay, required this.child, this.restartWidget});
   final Duration delay;
   final Widget child;
-  final Function restartWidget;
+  final Function? restartWidget;
 
   @override
   State<AutoHideWidget> createState() => _AutoHideWidgetState();

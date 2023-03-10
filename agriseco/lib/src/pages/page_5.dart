@@ -3,20 +3,18 @@ import 'package:agriseco/src/components/shared/custom_dropdown.dart';
 import 'package:agriseco/src/components/shared/custom_textfield.dart';
 import 'package:agriseco/src/components/shared/detail_row_with_circle_lead.dart';
 import 'package:flutter/material.dart';
-
-import '../../agriseco.dart';
 import '../constants.dart';
 
 class FifthPage extends StatefulWidget {
-  const FifthPage({Key key, this.isDisableBottomBtn});
-  final ValueChanged<bool> isDisableBottomBtn;
+  const FifthPage({Key? key, this.isDisableBottomBtn});
+  final ValueChanged<bool>? isDisableBottomBtn;
 
   @override
   State<FifthPage> createState() => _FifthPageState();
 }
 
 class _FifthPageState extends State<FifthPage> {
-  bool _isMale;
+  bool? _isMale;
 
   @override
   void initState() {
@@ -83,16 +81,16 @@ class _FifthPageState extends State<FifthPage> {
                     name: 'Nam',
                     onTab: () {
                       setState(() {
-                        if (!_isMale) _isMale = !_isMale;
+                        if (!_isMale!) _isMale = !_isMale!;
                       });
                     },
                   ),
                   _CircleChoice(
-                    isChoiced: !_isMale,
+                    isChoiced: !_isMale!,
                     name: 'Nữ',
                     onTab: () {
                       setState(() {
-                        if (_isMale) _isMale = !_isMale;
+                        if (_isMale!) _isMale = !_isMale!;
                       });
                     },
                   ),
@@ -194,9 +192,9 @@ class _FifthPageState extends State<FifthPage> {
 
 class _PieceInfo extends StatelessWidget {
   const _PieceInfo({
-    @required this.title,
+    required this.title,
     this.desc = '',
-    @required this.value,
+    required this.value,
   });
 
   final String title;
@@ -233,9 +231,9 @@ class _PieceInfo extends StatelessWidget {
 
 class _NewPieceInfo extends StatelessWidget {
   const _NewPieceInfo({
-    @required this.title,
+    required this.title,
     this.desc = '',
-    @required this.child,
+    required this.child,
   });
   final String title;
   final String desc;
@@ -277,9 +275,9 @@ class _NewPieceInfo extends StatelessWidget {
 
 class _CircleChoice extends StatelessWidget {
   const _CircleChoice(
-      {@required this.name, this.isChoiced = false, @required this.onTab});
+      {required this.name, this.isChoiced = false, required this.onTab});
   final String name;
-  final bool isChoiced;
+  final bool? isChoiced;
   final VoidCallback onTab;
 
   @override
@@ -296,7 +294,7 @@ class _CircleChoice extends StatelessWidget {
                 height: 10,
                 width: 10,
                 decoration: BoxDecoration(
-                  color: isChoiced ? kYellowColor : Colors.transparent,
+                  color: isChoiced! ? kYellowColor : Colors.transparent,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -307,8 +305,8 @@ class _CircleChoice extends StatelessWidget {
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  width: isChoiced ? 8 : 1,
-                  color: isChoiced ? kBackgroundColor : Colors.black87,
+                  width: isChoiced! ? 8 : 1,
+                  color: isChoiced! ? kBackgroundColor : Colors.black87,
                   style: BorderStyle.solid,
                 )),
           ),
@@ -322,17 +320,17 @@ class _CircleChoice extends StatelessWidget {
 class CheckboxInfo extends StatefulWidget {
   CheckboxInfo({this.enable, this.name, this.value, this.onChange});
 
-  final bool enable;
-  final String name;
-  final bool value;
-  final ValueChanged<bool> onChange;
+  final bool? enable;
+  final String? name;
+  final bool? value;
+  final ValueChanged<bool>? onChange;
 
   @override
   State<CheckboxInfo> createState() => _CheckboxInfoState();
 }
 
 class _CheckboxInfoState extends State<CheckboxInfo> {
-  bool _value;
+  bool? _value;
 
   @override
   void initState() {
@@ -348,21 +346,20 @@ class _CheckboxInfoState extends State<CheckboxInfo> {
           scale: 1.5,
           child: Checkbox(
             value: _value,
-            onChanged: (bool value) {
-              if (widget.enable) {
+            onChanged: (bool? value) {
+              if (widget.enable!) {
                 setState(() {
                   _value = value;
                 });
               }
-              ;
             },
-            checkColor: widget.enable ? Colors.white : Colors.black38,
-            fillColor: widget.enable
+            checkColor: widget.enable! ? Colors.white : Colors.black38,
+            fillColor: widget.enable!
                 ? MaterialStateProperty.all(Colors.black38)
                 : MaterialStateProperty.all(Colors.grey.shade300),
           ),
         ),
-        Flexible(child: Text(widget.name)),
+        Flexible(child: Text(widget.name!)),
       ],
     );
   }

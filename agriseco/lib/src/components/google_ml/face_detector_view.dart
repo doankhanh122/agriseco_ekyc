@@ -11,18 +11,18 @@ enum EHeadDirection {
 
 class FaceDetectorView extends StatefulWidget {
   const FaceDetectorView({
-    @required this.cameraIndex,
+    required this.cameraIndex,
     this.smileCalculatate,
     this.headEulerAngleXCalculate,
     this.headEulerAngleYCalculate,
     this.facesCallback,
   });
 
-  final int cameraIndex;
-  final ValueChanged<double> smileCalculatate;
-  final ValueChanged<double> headEulerAngleXCalculate;
-  final ValueChanged<EHeadDirection> headEulerAngleYCalculate;
-  final ValueChanged<List<Face>> facesCallback;
+  final int? cameraIndex;
+  final ValueChanged<double>? smileCalculatate;
+  final ValueChanged<double>? headEulerAngleXCalculate;
+  final ValueChanged<EHeadDirection>? headEulerAngleYCalculate;
+  final ValueChanged<List<Face>>? facesCallback;
 
   @override
   State<FaceDetectorView> createState() => _FaceDetectorViewState();
@@ -35,7 +35,7 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
     enableClassification: true,
   ));
 
-  CustomPaint _customPaint;
+  CustomPaint? _customPaint;
   bool _isBusy = false;
 
   @override
@@ -68,34 +68,34 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
 
     faces.removeWhere((face) =>
             face.boundingBox.top >
-                (inputImage.inputImageData.size.height / 2) ||
+                (inputImage.inputImageData!.size.height / 2) ||
             face.boundingBox.bottom <
-                (inputImage.inputImageData.size.height / 2) ||
+                (inputImage.inputImageData!.size.height / 2) ||
             face.boundingBox.left >
-                (inputImage.inputImageData.size.width / 2) ||
+                (inputImage.inputImageData!.size.width / 2) ||
             face.boundingBox.right <
-                (inputImage.inputImageData.size.width / 2) ||
+                (inputImage.inputImageData!.size.width / 2) ||
             (face.boundingBox.width) * 0.75 >
-                inputImage.inputImageData.size.width / 2
+                inputImage.inputImageData!.size.width / 2
         //
         );
 
-    widget.facesCallback.call(faces);
+    widget.facesCallback!.call(faces);
 
     if (inputImage.inputImageData?.size != null &&
         inputImage.inputImageData?.imageRotation != null) {
       final painter = FaceDetectorPainter(
         faces: faces,
-        absoluteImageSize: inputImage.inputImageData.size,
-        rotation: inputImage.inputImageData.imageRotation,
-        smileCalculate: (double smileProbability) {
-          widget.smileCalculatate.call(smileProbability);
+        absoluteImageSize: inputImage.inputImageData!.size,
+        rotation: inputImage.inputImageData!.imageRotation,
+        smileCalculate: (double? smileProbability) {
+          widget.smileCalculatate!.call(smileProbability!);
         },
         headEulerAngleX: (double value) {
           // widget.headEulerAngleXCalculate.call(value);
         },
         headEulerAngleY: (EHeadDirection value) {
-          widget.headEulerAngleYCalculate.call(value);
+          widget.headEulerAngleYCalculate!.call(value);
         },
       );
 

@@ -1,30 +1,52 @@
 import 'package:agriseco/src/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'agr_keyboard_visibile_builder.dart';
 
 class CustomDropdown extends StatefulWidget {
-  CustomDropdown({
-    this.dropDownList,
+  const CustomDropdown({
+    Key? key,
+    this.controller,
+    this.initialValue,
+    required this.dropDownList,
+    this.padding,
+    this.textStyle,
+    this.onChanged,
+    this.validator,
+    this.isEnabled = true,
+    this.keyboardType,
     this.listSpace = 0,
     this.dropDownItemCount = 6,
     this.listTextStyle,
     this.listPadding,
-  });
+    // this.singleController,
+  })  : assert(initialValue == null || controller == null),
+        assert(!(controller != null &&
+            !(controller is SingleValueDropDownController))),
+        singleController = controller,
+        super(key: key);
 
-  final List<DropdownItem> dropDownList;
+  final dynamic controller;
+  final dynamic initialValue;
+  final List<DropdownItem>? dropDownList;
+  final EdgeInsets? padding;
+  final TextStyle? textStyle;
+  final ValueSetter? onChanged;
+
+  final FormFieldValidator<String>? validator;
+  final bool isEnabled;
+  final TextInputType? keyboardType;
 
   final double listSpace;
   final int dropDownItemCount;
 
   ///dropdown list item text style
-  final TextStyle listTextStyle;
+  final TextStyle? listTextStyle;
 
   ///dropdown List item padding
-  final ListPadding listPadding;
+  final ListPadding? listPadding;
 
-  SingleValueDropDownController singleController;
+  final SingleValueDropDownController? singleController;
 
   @override
   State<CustomDropdown> createState() => _CustomDropdownState();
@@ -35,27 +57,30 @@ class _CustomDropdownState extends State<CustomDropdown>
   static final Animatable<double> _easeInTween =
       CurveTween(curve: Curves.easeIn);
 
-  TextEditingController _cnt;
-  Animation<double> _heightFactor;
-  List<DropdownItem> _dropDownList;
-  OverlayEntry _entry;
+  late TextEditingController _cnt;
+  late Animation<double> _heightFactor;
+  List<DropdownItem>? _dropDownList;
+  OverlayEntry? _entry;
   LayerLink _layerLink = LayerLink();
 
-  int _maxListItem;
-  double _height;
-  Offset _offset;
-  double _listTileHeight;
-  TextStyle _listTileTextStyle;
-  AnimationController _controller;
+  late int _maxListItem;
+  double? _height;
+  late Offset _offset;
+  double? _listTileHeight;
+  TextStyle? _listTileTextStyle;
+  late AnimationController _controller;
 
-  ListPadding _listPadding;
-  bool _isExpanded;
-  FocusNode _textFieldFocusNode;
+  ListPadding? _listPadding;
+  late bool _isExpanded;
+  late FocusNode _textFieldFocusNode;
+
+  late SingleValueDropDownController _singleValueDropDownController;
 
   @override
   void initState() {
     super.initState();
     _textFieldFocusNode = FocusNode();
+    _singleValueDropDownController = SingleValueDropDownController();
     _cnt = TextEditingController();
     _isExpanded = false;
     _maxListItem = 6;
@@ -67,10 +92,46 @@ class _CustomDropdownState extends State<CustomDropdown>
 
     _heightFactor = _controller.drive(_easeInTween);
 
+    _textFieldFocusNode.addListener(() {
+      if (!_textFieldFocusNode.hasFocus && _isExpanded) {
+        _isExpanded = !_isExpanded;
+        hideOverlay();
+        // String text = widget.singleController!.dropDownValue!.name +
+        //     "-" +
+        //     widget.singleController!.dropDownValue!.value.toString();
+        //
+        // print(text);
+        // if (text != _cnt.text) {
+        //   setState(() {
+        //     _cnt.clear();
+        //   });
+        // }
+
+        if (_singleValueDropDownController.dropDownValue == null) {
+          setState(() {
+            _cnt.clear();
+          });
+        } else {
+          String _text =
+              _singleValueDropDownController.dropDownValue!.value.toString() +
+                  "-" +
+                  _singleValueDropDownController.dropDownValue!.name;
+
+          if (_text != _cnt.text) {
+            setState(() {
+              _cnt.clear();
+            });
+          }
+        }
+
+        // print(_singleValueDropDownController.dropDownValue?.name);
+      }
+    });
+
     updateFunction();
   }
 
-  Size _textWidgetSize(String text, TextStyle style) {
+  Size _textWidgetSize(String text, TextStyle? style) {
     final TextPainter textPainter = TextPainter(
         text: TextSpan(text: text, style: style),
         maxLines: 1,
@@ -79,9 +140,9 @@ class _CustomDropdownState extends State<CustomDropdown>
     return textPainter.size;
   }
 
-  updateFunction({CustomDropdown oldWidget}) {
+  updateFunction({CustomDropdown? oldWidget}) {
     _dropDownList =
-        _dropDownList == null ? List.from(widget.dropDownList) : _dropDownList;
+        _dropDownList == null ? List.from(widget.dropDownList!) : _dropDownList;
     _listPadding = widget.listPadding ?? ListPadding();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -90,12 +151,12 @@ class _CustomDropdownState extends State<CustomDropdown>
 
       _listTileHeight =
           _textWidgetSize("dummy Text", _listTileTextStyle).height +
-              _listPadding.top +
-              _listPadding.bottom;
+              _listPadding!.top +
+              _listPadding!.bottom;
 
-      _height = _dropDownList.length < _maxListItem
-          ? _dropDownList.length * _listTileHeight
-          : _listTileHeight * _maxListItem.toDouble();
+      _height = _dropDownList!.length < _maxListItem
+          ? _dropDownList!.length * _listTileHeight!
+          : _listTileHeight! * _maxListItem.toDouble();
     });
   }
 
@@ -133,6 +194,9 @@ class _CustomDropdownState extends State<CustomDropdown>
         child: TextFormField(
           controller: _cnt,
           focusNode: _textFieldFocusNode,
+          keyboardType: widget.keyboardType,
+          style: widget.textStyle,
+          enabled: widget.isEnabled,
           onTap: () {
             if (_dropDownList != null) {
               if (!_isExpanded) {
@@ -146,11 +210,11 @@ class _CustomDropdownState extends State<CustomDropdown>
               _isExpanded = !_isExpanded;
             });
           },
-          onChanged: (String inputText) {
-            // print('Droplist lenght: ${_dropDownList.length}');
-            // // print('_Height Overlay: ${_height}');
-            // print(widget.singleController);
-          },
+          // onChanged: (String inputText) {
+          //   // print('Droplist lenght: ${_dropDownList.length}');
+          //   // // print('_Height Overlay: ${_height}');
+          //   // print(widget.singleController);
+          // },
           decoration: InputDecoration(
             suffixIcon: !_isExpanded
                 ? Icon(
@@ -166,6 +230,8 @@ class _CustomDropdownState extends State<CustomDropdown>
             border: OutlineInputBorder(
                 borderSide: BorderSide(color: kBackgroundColor)),
           ),
+          validator: (value) =>
+              widget.validator != null ? widget.validator!(value) : null,
         ),
       );
     });
@@ -180,7 +246,7 @@ class _CustomDropdownState extends State<CustomDropdown>
     double posFromTop = _offset.dy;
     double posFromBot = MediaQuery.of(context).size.height - posFromTop;
 
-    double dropdownListHeight = _height + widget.listSpace;
+    double dropdownListHeight = _height! + widget.listSpace;
     double ht = dropdownListHeight + 120;
     _entry = OverlayEntry(builder: (context) {
       return Positioned(
@@ -195,8 +261,8 @@ class _CustomDropdownState extends State<CustomDropdown>
           offset: Offset(
             0,
             posFromBot < ht
-                ? -dropdownListHeight - _listPadding.top
-                : dropdownListHeight + _listPadding.top,
+                ? -dropdownListHeight - _listPadding!.top
+                : dropdownListHeight + _listPadding!.top,
           ),
           child: AnimatedBuilder(
             animation: _controller.view,
@@ -206,12 +272,12 @@ class _CustomDropdownState extends State<CustomDropdown>
       );
     });
 
-    overlay.insert(_entry);
+    overlay.insert(_entry!);
   }
 
   void hideOverlay() {
     _controller.reverse().then<void>((void value) {
-      if (_entry != null && _entry.mounted) {
+      if (_entry != null && _entry!.mounted) {
         _entry?.remove();
         _entry = null;
       }
@@ -250,9 +316,13 @@ class _CustomDropdownState extends State<CustomDropdown>
                 onSearchedDropListItem: (listItem) {
                   if (listItem != null) {}
                 },
-                onSelectedDropListItem: (val) {
+                onSelectedDropListItem: (DropdownItem item) {
                   hideOverlay();
-                  setState(() {});
+                  setState(() {
+                    _cnt.text = item.value.toString() + "-" + item.name;
+                  });
+
+                  _singleValueDropDownController.setDropDown(item);
                 },
               ),
             ),
@@ -273,28 +343,28 @@ class SingleSelection extends StatefulWidget {
     this.onSearchedDropListItem,
     this.mainController,
   });
-  final List<DropdownItem> dropDownList;
-  final double height;
-  final double listTileHeight;
-  final ListPadding listPadding;
+  final List<DropdownItem>? dropDownList;
+  final double? height;
+  final double? listTileHeight;
+  final ListPadding? listPadding;
 
-  final ValueSetter onSelectedDropListItem;
-  final ValueSetter onSearchedDropListItem;
-  final TextEditingController mainController;
+  final ValueSetter<DropdownItem>? onSelectedDropListItem;
+  final ValueSetter? onSearchedDropListItem;
+  final TextEditingController? mainController;
 
   @override
   State<SingleSelection> createState() => _SingleSelectionState();
 }
 
 class _SingleSelectionState extends State<SingleSelection> {
-  List<DropdownItem> newDropDownList;
+  late List<DropdownItem> newDropDownList;
 
   onItemChanged(String value) {
     setState(() {
       if (value.isEmpty) {
-        newDropDownList = List.from(widget.dropDownList);
+        newDropDownList = List.from(widget.dropDownList!);
       } else {
-        newDropDownList = widget.dropDownList
+        newDropDownList = widget.dropDownList!
             .where((item) => (item.value.toString() + item.name)
                 .toLowerCase()
                 .contains(value.toLowerCase()))
@@ -306,13 +376,13 @@ class _SingleSelectionState extends State<SingleSelection> {
   @override
   void initState() {
     super.initState();
-    newDropDownList = List.from(widget.dropDownList);
+    newDropDownList = List.from(widget.dropDownList!);
 
-    onItemChanged(widget.mainController.text);
-    widget.mainController.addListener(() {
+    onItemChanged(widget.mainController!.text);
+    widget.mainController!.addListener(() {
       if (mounted) {
-        onItemChanged(widget.mainController.text);
-        widget.onSearchedDropListItem(newDropDownList);
+        onItemChanged(widget.mainController!.text);
+        widget.onSearchedDropListItem!(newDropDownList);
       }
     });
   }
@@ -343,15 +413,15 @@ class _SingleSelectionState extends State<SingleSelection> {
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
               onTap: () {
-                widget.onSelectedDropListItem(newDropDownList[index]);
+                widget.onSelectedDropListItem!(newDropDownList[index]);
               },
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.only(
                     left: 10,
                     right: 10,
-                    bottom: widget.listPadding.bottom,
-                    top: widget.listPadding.top),
+                    bottom: widget.listPadding!.bottom,
+                    top: widget.listPadding!.top),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: FittedBox(
@@ -371,11 +441,11 @@ class _SingleSelectionState extends State<SingleSelection> {
 }
 
 class SingleValueDropDownController extends ChangeNotifier {
-  DropdownItem dropDownValue;
-  SingleValueDropDownController({DropdownItem data}) {
+  DropdownItem? dropDownValue;
+  SingleValueDropDownController({DropdownItem? data}) {
     setDropDown(data);
   }
-  setDropDown(DropdownItem model) {
+  setDropDown(DropdownItem? model) {
     dropDownValue = model;
     notifyListeners();
   }
@@ -393,7 +463,7 @@ class ListPadding {
 }
 
 class DropdownItem {
-  DropdownItem({this.name, this.value});
+  DropdownItem({required this.name, required this.value});
 
   final String name;
   final int value;

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 
 class DetailRowWithCircleLead extends StatelessWidget {
-  const DetailRowWithCircleLead({@required this.child, this.isLead = true});
+  const DetailRowWithCircleLead({required this.child, this.isLead = true});
 
   final Widget child;
   final bool isLead;
@@ -25,7 +25,7 @@ class DetailRowWithCircleLead extends StatelessWidget {
 
 class _CircleLead extends StatelessWidget {
   const _CircleLead({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

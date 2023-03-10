@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 
 class CustomButton2 extends StatelessWidget {
-  const CustomButton2({@required this.label, @required this.onTab});
+  const CustomButton2({required this.label, required this.onTab});
 
   final String label;
   final Function onTab;
@@ -10,7 +10,7 @@ class CustomButton2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTab,
+      onTap: onTab as void Function()?,
       child: Container(
         decoration: BoxDecoration(
             color: kGreenColor,

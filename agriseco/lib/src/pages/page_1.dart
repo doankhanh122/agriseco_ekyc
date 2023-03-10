@@ -12,9 +12,9 @@ class FirstPage extends StatefulWidget {
       {this.choices,
       this.isShowBottomButtonCallback,
       this.isAgribankChoicedCallback});
-  final List<AccountChoice> choices;
-  final ValueChanged<bool> isShowBottomButtonCallback;
-  final ValueChanged<bool> isAgribankChoicedCallback;
+  final List<AccountChoice>? choices;
+  final ValueChanged<bool>? isShowBottomButtonCallback;
+  final ValueChanged<bool>? isAgribankChoicedCallback;
 
   @override
   State<FirstPage> createState() => _FirstPageState();
@@ -58,15 +58,15 @@ class _FirstPageState extends State<FirstPage> {
   void _onChoiceTab(int index) {
     // Check can go to next Page
     if ([1, 2, 3, 7].contains(index)) {
-      widget.isShowBottomButtonCallback.call(false);
+      widget.isShowBottomButtonCallback!.call(false);
     } else {
-      widget.isShowBottomButtonCallback.call(true);
+      widget.isShowBottomButtonCallback!.call(true);
     }
 
     if (index == 5) {
-      widget.isAgribankChoicedCallback.call(true);
+      widget.isAgribankChoicedCallback!.call(true);
     } else {
-      widget.isAgribankChoicedCallback.call(false);
+      widget.isAgribankChoicedCallback!.call(false);
     }
     //
     setState(() {
@@ -83,19 +83,16 @@ class _FirstPageState extends State<FirstPage> {
       case 2:
       case 3:
         return Content2();
-        break;
 
       case 5:
         return Content3();
       case 7:
         return Content4();
-        break;
 
       case 4:
       case 6:
       default:
         return Content1();
-        break;
     }
   }
 
@@ -142,12 +139,12 @@ class _FirstPageState extends State<FirstPage> {
 
 class AccountChoice {
   AccountChoice({this.isSelected, this.accountType});
-  bool isSelected;
-  final String accountType;
+  bool? isSelected;
+  final String? accountType;
 }
 
 class _Choices extends StatelessWidget {
-  const _Choices({@required this.choices, @required this.onChoiceTap});
+  const _Choices({required this.choices, required this.onChoiceTap});
 
   final List<AccountChoice> choices;
   final ValueChanged<int> onChoiceTap;
@@ -171,7 +168,7 @@ class _Choices extends StatelessWidget {
 }
 
 class _Choice extends StatelessWidget {
-  const _Choice({@required this.choice, @required this.onAccountChoiceTap});
+  const _Choice({required this.choice, required this.onAccountChoiceTap});
 
   final AccountChoice choice;
   final ValueChanged<AccountChoice> onAccountChoiceTap;
@@ -188,14 +185,14 @@ class _Choice extends StatelessWidget {
         ),
         margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
         decoration: BoxDecoration(
-          color: choice.isSelected ? kYellowColor : null,
+          color: choice.isSelected! ? kYellowColor : null,
           // border: Border.all(color: kBackgroundColor, style: BorderStyle.solid),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         child: Row(
           children: [
-            choice.isSelected ? _CircleSelected() : _CircleDeselected(),
-            Text(choice.accountType),
+            choice.isSelected! ? _CircleSelected() : _CircleDeselected(),
+            Text(choice.accountType!),
           ],
         ),
       ),
@@ -256,7 +253,7 @@ class _CircleSelected extends StatelessWidget {
 }
 
 class _AccountChoices extends StatelessWidget {
-  const _AccountChoices({@required this.choices, @required this.onChoieTab});
+  const _AccountChoices({required this.choices, required this.onChoieTab});
 
   final List<AccountChoice> choices;
   final ValueChanged<int> onChoieTab;

@@ -16,7 +16,7 @@ class CameraRect extends StatefulWidget {
     this.cameraCapturePressed,
   });
 
-  final ValueChanged<bool> cameraCapturePressed;
+  final ValueChanged<bool>? cameraCapturePressed;
 
   @override
   State<CameraRect> createState() => _CameraRectState();
@@ -24,13 +24,13 @@ class CameraRect extends StatefulWidget {
 
 class _CameraRectState extends State<CameraRect> {
   List<CameraDescription> _cameras = [];
-  CameraController controller;
-  int cameraId;
+  late CameraController controller;
+  int? cameraId;
 
   void getCameras() async {
     _cameras = await availableCameras();
     controller = CameraController(
-      _cameras[cameraId],
+      _cameras[cameraId!],
       ResolutionPreset.max,
       imageFormatGroup: ImageFormatGroup.yuv420,
     );
@@ -110,7 +110,7 @@ class _CameraRectState extends State<CameraRect> {
                         onPressed: () {
                           setState(() {
                             cameraId = cameraId == 0 ? 1 : 0;
-                            widget.cameraCapturePressed.call(false);
+                            widget.cameraCapturePressed!.call(false);
                           });
                           getCameras();
                         },
@@ -148,7 +148,7 @@ class _CameraRectState extends State<CameraRect> {
                 ElevatedButton(
                   onPressed: () {
                     controller.pausePreview();
-                    widget.cameraCapturePressed.call(true);
+                    widget.cameraCapturePressed!.call(true);
                   },
                   style: ButtonStyle(
                       backgroundColor:

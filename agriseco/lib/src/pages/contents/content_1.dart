@@ -4,7 +4,7 @@ import '../../components/shared/detail_row_with_circle_lead.dart';
 
 class Content1 extends StatelessWidget {
   const Content1({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

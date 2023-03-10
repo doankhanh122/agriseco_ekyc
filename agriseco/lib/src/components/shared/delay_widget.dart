@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DelayWidget extends StatefulWidget {
-  const DelayWidget({@required this.delay, @required this.child});
+  const DelayWidget({required this.delay, required this.child});
   final Duration delay;
   final Widget child;
 

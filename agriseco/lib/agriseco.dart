@@ -25,10 +25,10 @@ class Agriseco extends StatefulWidget {
 }
 
 class _AgrisecoState extends State<Agriseco> {
-  Map<int, bool> isShowBottomButtonStates = {};
+  Map<int, bool?> isShowBottomButtonStates = {};
   List<EkycStep> steps = [];
 
-  void updateBottomButtonStates({int index, bool newValue}) {
+  void updateBottomButtonStates({int? index, bool? newValue}) {
     for (int i = 0; i < isShowBottomButtonStates.length; i++) {
       // isShowBottomButtonStates[i] =
       //     i == index ? newValue : (i == 0 ? true : false);
@@ -52,7 +52,7 @@ class _AgrisecoState extends State<Agriseco> {
   //Khi KH la CBNV AGRIBANK. them 1 Step xác nhận email, đơn vị công tác
   //đồng thời update lại trạng tái BottomButton (Tiếp tục)
   //Khởi tạo step
-  List<EkycStep> makingSteps({bool isAgribank}) {
+  List<EkycStep> makingSteps({required bool isAgribank}) {
     int a = isAgribank ? 1 : 0;
     List<EkycStep> result = [];
     result = [
@@ -184,16 +184,16 @@ class EkycStart extends StatefulWidget {
   const EkycStart(
       {this.isShowBottomButtonStates, this.steps, this.stepTappedCallBack});
 
-  final Map<int, bool> isShowBottomButtonStates;
-  final List<EkycStep> steps;
-  final ValueChanged<int> stepTappedCallBack;
+  final Map<int, bool?>? isShowBottomButtonStates;
+  final List<EkycStep>? steps;
+  final ValueChanged<int>? stepTappedCallBack;
 
   @override
   State<EkycStart> createState() => _EkycStartState();
 }
 
 class _EkycStartState extends State<EkycStart> {
-  int currentIndex = 3;
+  int currentIndex = 0;
 
   bool isShowBottomButtonAtInitial(int index) {
     if (index != 0) return false;
@@ -208,18 +208,18 @@ class _EkycStartState extends State<EkycStart> {
   @override
   Widget build(BuildContext context) {
     return EkycStepper(
-      isShowBottomButton: widget.isShowBottomButtonStates[currentIndex],
+      isShowBottomButton: widget.isShowBottomButtonStates![currentIndex],
       currentStep: currentIndex,
-      ekycSteps: widget.steps,
+      ekycSteps: widget.steps!,
       onStepContinue: () {
         setState(() {
-          currentIndex = currentIndex + 1 >= widget.steps.length
+          currentIndex = currentIndex + 1 >= widget.steps!.length
               ? currentIndex
               : currentIndex + 1;
         });
       },
       onStepTapped: (int index) {
-        widget.stepTappedCallBack.call(index);
+        widget.stepTappedCallBack!.call(index);
         setState(() {
           currentIndex = index;
         });

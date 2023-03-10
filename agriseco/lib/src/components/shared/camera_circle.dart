@@ -1,5 +1,4 @@
 import 'package:agriseco/src/components/google_ml/face_detector_view.dart';
-import 'package:agriseco/src/constants.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -22,8 +21,8 @@ class CameraCircle extends StatefulWidget {
     this.passedAllConditionCallback,
   });
 
-  final ValueChanged<bool> cameraCapturePressed;
-  final VoidCallback passedAllConditionCallback;
+  final ValueChanged<bool>? cameraCapturePressed;
+  final VoidCallback? passedAllConditionCallback;
 
   @override
   State<CameraCircle> createState() => _CameraCircleState();
@@ -31,8 +30,8 @@ class CameraCircle extends StatefulWidget {
 
 class _CameraCircleState extends State<CameraCircle> {
   List<CameraDescription> _cameras = [];
-  CameraController controller;
-  int cameraId;
+  late CameraController controller;
+  int? cameraId;
 
   ValueNotifier<bool> _isSmileNotifier = ValueNotifier(false);
   ValueNotifier<List<Face>> _facesNotifier = ValueNotifier([]);
@@ -45,7 +44,7 @@ class _CameraCircleState extends State<CameraCircle> {
   void getCameras() async {
     _cameras = await availableCameras();
     controller = CameraController(
-      _cameras[cameraId],
+      _cameras[cameraId!],
       ResolutionPreset.max,
       imageFormatGroup: ImageFormatGroup.yuv420,
     );
@@ -108,7 +107,7 @@ class _CameraCircleState extends State<CameraCircle> {
                   headNotifier: _headAngleNotifier,
                   allConditionPassed: () {
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      widget.passedAllConditionCallback.call();
+                      widget.passedAllConditionCallback!.call();
                       setState(() {
                         _didSmile = true;
                       });
@@ -285,7 +284,7 @@ class _CameraCircleState extends State<CameraCircle> {
 
                 setState(() {
                   cameraId = cameraId == 0 ? 1 : 0;
-                  widget.cameraCapturePressed.call(false);
+                  widget.cameraCapturePressed!.call(false);
                 });
               },
               child: Icon(
@@ -393,17 +392,17 @@ class _CameraCircleClipper extends CustomClipper<Rect> {
 
 class _DirectionTitle extends StatelessWidget {
   const _DirectionTitle({
-    @required this.smileNotifier,
-    @required this.facesNotifier,
-    @required this.headNotifier,
+    required this.smileNotifier,
+    required this.facesNotifier,
+    required this.headNotifier,
     this.allConditionPassed,
-    @required this.reset,
+    required this.reset,
   });
 
   final ValueNotifier<bool> smileNotifier;
   final ValueNotifier<List<Face>> facesNotifier;
   final ValueNotifier<EHeadDirection> headNotifier;
-  final VoidCallback allConditionPassed;
+  final VoidCallback? allConditionPassed;
   final ValueNotifier<bool> reset;
 
   @override
@@ -412,7 +411,7 @@ class _DirectionTitle extends StatelessWidget {
     return AnimatedBuilder(
       animation:
           Listenable.merge([smileNotifier, facesNotifier, headNotifier, reset]),
-      builder: (BuildContext context, Widget child) {
+      builder: (BuildContext context, Widget? child) {
         int _facesCount = facesNotifier.value.length;
         bool isSmile = smileNotifier.value;
         EHeadDirection _headAngle = headNotifier.value;
@@ -438,7 +437,7 @@ class _DirectionTitle extends StatelessWidget {
             _didTurnRight = true;
           }
           if (_didTurnLeft && _didTurnRight) {
-            allConditionPassed.call();
+            allConditionPassed!.call();
             return Text('OK');
           }
 
@@ -508,7 +507,7 @@ class CirclePainter extends CustomPainter {
 }
 
 class DirectionAlert extends StatelessWidget {
-  const DirectionAlert({@required this.text});
+  const DirectionAlert({required this.text});
   final String text;
 
   @override

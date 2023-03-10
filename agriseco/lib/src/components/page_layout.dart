@@ -1,14 +1,11 @@
 import 'dart:async';
-
-import 'package:agriseco/src/components/shared/auto_hide_widget.dart';
-import 'package:agriseco/src/components/shared/delay_widget.dart';
 import 'package:agriseco/src/constants.dart';
 import 'package:flutter/material.dart';
 
 class PageLayout extends StatefulWidget {
   const PageLayout({
-    @required this.title,
-    @required this.content,
+    required this.title,
+    required this.content,
   });
 
   final String title;
@@ -19,14 +16,14 @@ class PageLayout extends StatefulWidget {
 }
 
 class _PageLayoutState extends State<PageLayout> {
-  ScrollController scrollController;
+  ScrollController? scrollController;
 
-  double _maxScrollExtent;
-  double _offset;
-  bool _scrollToBottom;
-  bool _scrollToTop;
+  late double _maxScrollExtent;
+  late double _offset;
+  late bool _scrollToBottom;
+  late bool _scrollToTop;
   bool _showScroll = false;
-  Timer _timer;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -34,10 +31,10 @@ class _PageLayoutState extends State<PageLayout> {
 
     _scrollToTop = false;
     _scrollToBottom = false;
-    scrollController.addListener(() {
-      if (_timer != null) _timer.cancel();
-      _maxScrollExtent = scrollController.position.maxScrollExtent;
-      _offset = scrollController.offset;
+    scrollController!.addListener(() {
+      if (_timer != null) _timer!.cancel();
+      _maxScrollExtent = scrollController!.position.maxScrollExtent;
+      _offset = scrollController!.offset;
 
       _timer = Timer(Duration(seconds: 1), () {
         setState(() {
@@ -71,7 +68,7 @@ class _PageLayoutState extends State<PageLayout> {
 
   @override
   void dispose() {
-    if (_timer != null) _timer.cancel();
+    if (_timer != null) _timer!.cancel();
 
     super.dispose();
   }
@@ -117,7 +114,7 @@ class _PageLayoutState extends State<PageLayout> {
                                 color: Colors.white,
                               ),
                               onPressed: () {
-                                scrollController.animateTo(0,
+                                scrollController!.animateTo(0,
                                     duration: Duration(milliseconds: 500),
                                     curve: Curves.easeIn);
                               },
@@ -130,7 +127,7 @@ class _PageLayoutState extends State<PageLayout> {
                                 color: Colors.white,
                               ),
                               onPressed: () {
-                                scrollController.animateTo(_maxScrollExtent,
+                                scrollController!.animateTo(_maxScrollExtent,
                                     duration: Duration(milliseconds: 500),
                                     curve: Curves.easeIn);
                               })
@@ -147,8 +144,8 @@ class _PageLayoutState extends State<PageLayout> {
 
 class _CircleIconButton extends StatelessWidget {
   const _CircleIconButton({
-    @required this.icon,
-    @required this.onPressed,
+    required this.icon,
+    required this.onPressed,
   });
 
   final Function onPressed;
@@ -163,7 +160,7 @@ class _CircleIconButton extends StatelessWidget {
         color: Colors.cyan.withOpacity(0.3),
       ),
       child: IconButton(
-        onPressed: onPressed,
+        onPressed: onPressed as void Function()?,
         icon: icon,
       ),
     );
